@@ -1,20 +1,28 @@
 from common import load
 
 
-class storms_class:
+class storms_types:
     
-    def __init__(self, infile):
+    def __init__(
+            self, 
+            infile, 
+            col_storm = 'kp', 
+            year = None):
         
         df = load(infile)
         
-        self.intense = df.loc[df['kp'] >= 6]
+        if year is not None:
+            df = df.loc[df.index.year == year]
+        
+        self.intense = df.loc[df[col_storm] >= 6]
         
         self.modered = df.loc[
-            (df['kp'] > 3) &
-            (df['kp'] < 6)
+            (df[col_storm] > 3) &
+            (df[col_storm] < 6)
             ]
         
-        self.quiets = df.loc[df['kp'] <= 3]
-        
+        self.quiets = df.loc[df[col_storm] <= 3]
+        self.df = df
 
-infile ='all_results.py'
+def main():
+    infile ='all_results.py'
