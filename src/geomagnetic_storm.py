@@ -9,6 +9,7 @@ class storms_types:
             col_storm = 'kp', 
             year = None):
         
+        
         df = load(infile)
         
         if year is not None:
