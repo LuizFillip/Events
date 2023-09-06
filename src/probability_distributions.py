@@ -3,7 +3,7 @@ import numpy as np
 from math import floor, ceil
 import PlasmaBubbles as pb 
 import base as b 
-from events import concat_results 
+# from events import concat_results 
 
 
 
@@ -41,7 +41,7 @@ def probability_distribuition(
         end = start + step
         
         res = df.loc[(df[col_gama] > start) & 
-                     (df[col_gama] < end), :]
+                     (df[col_gama] <= end), :]
 
         epbs = len(res.loc[res[col_epbs] == 1.0])
         
@@ -60,37 +60,103 @@ def probability_distribuition(
     
     ds = ds.loc[~((ds['epbs'] == 0) & (ds['days'] == 0))] 
     
+    ds['rate'] =  ds['rate'] *100
+    
     ds['year'] = year
     return ds
 
 
+def set_plots(ax):
+    
+    for ax in ax.flat:
+        for bar in [0, 100]:
+            ax.axhline(bar, linestyle = ":", 
+                       lw = 2, color = "k")
+            
 
 
-def run_all():
+import matplotlib.pyplot as plt 
+
+
+
+
+
+def plot_probability_distribution():
     
-    import matplotlib.pyplot as plt 
+    return 
     
-    for year in range(2013, 2023):
+b.config_labels()
     
-        df = concat_results(year = year)
     
+fig, ax = plt.subplots(
+    dpi = 300,
+    ncols = 2, 
+    sharex = True,
+    sharey = True,
+    figsize = (12, 4)
+    )
+
+plt.subplots_adjust(wspace = 0.1)
+
+df = b.load('all_results.txt')
+
+df = df.loc[df['kp_max'] > 4]
+
+
+def plot_distributions(ax, df, s = 2013, e = 2016):
+    
+    years = list(range(s, e))
+
+    for yr in years:
         
+        ds1 = df.loc[df.index.year == yr]
+    
         ds = probability_distribuition(
-                df,
+                ds1,
                 step = 0.2, 
                 col_gama = 'all',
                 col_epbs = 'epb'
                 )
         
-        plt.plot(ds['start'], ds['rate'], label = year)
+        ax.plot(ds['start'], ds['rate'], label = yr)
+        ax.set(xlim = [0, 3], 
+               ylim = [-20, 120],
+               xlabel = '$\\gamma_{FT}~\\times 10^{-3}$ ($s^{-1}$)')
         
-        plt.legend()
         
-# df = b.load('database/Results/gamma/saa.txt')
+        
+    ds2 = df.loc[df.index.year <= years[-1]]
+    
+    ds = probability_distribuition(
+            ds2,
+            step = 0.2, 
+            col_gama = 'all',
+            col_epbs = 'epb'
+            )
+    
+    ax.plot(ds['start'], ds['rate'], lw = 2,
+            label = 'all', color = 'r')
+    
+    
+    ax.legend(ncol = 1, 
+              loc = 'lower right')
 
-# df['all'] = df['all'] - df['R']
+   
 
-# df['all'].plot()
+plot_distributions(ax[0], df, s = 2013, e = 2016)
+plot_distributions(ax[1], df, s = 2018, e = 2021)
 
 
-run_all()
+ax[0].set(ylabel = 'EPBs probability \noccurrence ($\\%$)')
+
+
+set_plots(ax)
+
+
+fig.suptitle('disturbed days ($kp > 4$)')
+
+
+df.loc
+
+
+
