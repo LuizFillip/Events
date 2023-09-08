@@ -22,23 +22,40 @@ def epbs(col = -40):
     
     df = b.load('database/epbs/postsunset.txt')
     
+    df.rename(columns = {'all': 'epb'}, 
+              inplace = True)
+    return df
+
+def dst(df):
     
-    return df#.loc[:, [str(col)]]
+    infile = 'database/indices/kyoto2000.txt'
+    ds = b.load(infile)
+    ds = ds.resample('1D').asfreq()
+    return b.sel_dates(ds, df.index[0], df.index[-1])
+
+def pre():
+    df = b.load('digisonde/data/PRE/saa/2013_2022.txt')
+    
+    return df
 
 def concat_results():
     
     g = gamma()
     
     e = epbs()
+    
+    p = pre()
 
     i = indices(g)
     
-    return pd.concat([g, i, e], axis = 1)
-# def main():
+    d = dst(g)
+    
+    return pd.concat([g, i, p, e, d], axis = 1)
+# 
 
-# df = concat_results()
+df = concat_results()
     
 # df.to_csv('all_results.txt')
+
+df['dst'].plot()
     
-    
-# df 
