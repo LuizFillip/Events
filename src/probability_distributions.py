@@ -78,31 +78,6 @@ def set_plots(ax):
 import matplotlib.pyplot as plt 
 
 
-
-
-
-def plot_probability_distribution():
-    
-    return 
-    
-b.config_labels()
-    
-    
-fig, ax = plt.subplots(
-    dpi = 300,
-    ncols = 2, 
-    sharex = True,
-    sharey = True,
-    figsize = (12, 4)
-    )
-
-plt.subplots_adjust(wspace = 0.1)
-
-df = b.load('all_results.txt')
-
-df = df.loc[df['kp_max'] > 4]
-
-
 def plot_distributions(ax, df, s = 2013, e = 2016):
     
     years = list(range(s, e))
@@ -141,22 +116,46 @@ def plot_distributions(ax, df, s = 2013, e = 2016):
     ax.legend(ncol = 1, 
               loc = 'lower right')
 
+
+def plot_probability_distribution():
+    
+    fig, ax = plt.subplots(
+        dpi = 300,
+        ncols = 2, 
+        sharex = True,
+        sharey = True,
+        figsize = (12, 4)
+        )
+
+    plt.subplots_adjust(wspace = 0.1)
+    
+    plot_distributions(ax[0], df, s = 2013, e = 2016)
+    plot_distributions(ax[1], df, s = 2018, e = 2021)
+
+
+    ax[0].set(ylabel = 'EPBs probability \noccurrence ($\\%$)')
+
+
+    set_plots(ax)
+
+
+    fig.suptitle('disturbed days ($kp > 4$)')
+
+    
+    return 
+    
+b.config_labels()
+    
+    
+
+
+df = b.load('all_results.txt')
+
+# df = df.loc[df['kp_max'] > 4]
+
+
+
+# df.loc[df.index.year == 2021, 'all'].plot()
    
-
-plot_distributions(ax[0], df, s = 2013, e = 2016)
-plot_distributions(ax[1], df, s = 2018, e = 2021)
-
-
-ax[0].set(ylabel = 'EPBs probability \noccurrence ($\\%$)')
-
-
-set_plots(ax)
-
-
-fig.suptitle('disturbed days ($kp > 4$)')
-
-
-df.loc
-
 
 
