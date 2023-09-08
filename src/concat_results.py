@@ -30,7 +30,7 @@ def dst(df):
     
     infile = 'database/indices/kyoto2000.txt'
     ds = b.load(infile)
-    ds = ds.resample('1D').asfreq()
+    ds = ds.resample('D').min()
     return b.sel_dates(ds, df.index[0], df.index[-1])
 
 def pre():
@@ -51,11 +51,10 @@ def concat_results():
     d = dst(g)
     
     return pd.concat([g, i, p, e, d], axis = 1)
-# 
 
-df = concat_results()
+
+# df = concat_results()
     
 # df.to_csv('all_results.txt')
 
-df['dst'].plot()
-    
+
