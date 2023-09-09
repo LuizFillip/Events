@@ -1,4 +1,4 @@
-def solar_flux_activities(df):
+def solar_flux_cycles(df):
     
 
     lower = df.loc[df['f107'] <= 100]
@@ -12,7 +12,7 @@ def solar_flux_activities(df):
     
     return [lower, medium, high]
 
-def storm_activities(df):
+def storm_levels(df):
     
     week = df[(df['dst'] > -50)]
     
@@ -22,3 +22,10 @@ def storm_activities(df):
     intense = df[(df['dst'] < -100)]
     
     return [week, moderate, intense]
+
+def kp_levels(df):
+    quiet = df[df['kp_max'] <= 3]
+    
+    disturbed = df[df['kp_max'] > 3]
+    
+    return [quiet, disturbed]

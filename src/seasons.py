@@ -24,10 +24,3 @@ def seasons(df, month = 6):
     return df.loc[cond]
 
 
-# df = b.load('all_results.txt')
-
-# df['doy'] =  df.index.day_of_year
-
-# ds = seasons(df, month = 3)
-
-# ds.loc[ds.index.year == 2021]
