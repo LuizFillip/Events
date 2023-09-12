@@ -33,11 +33,10 @@ def probability_distribuition(
            'end': [], 
            'days': [], 
            'epbs': [], 
+           'epb_error': [],
            'rate': [], 
            'mean': [], 
-           'std': [], 
-           'epb_mean': [],
-           'epb_std': []
+           'std': []
            
            }
  
@@ -65,9 +64,9 @@ def probability_distribuition(
             
             std = ds[col_gamma].std()
             
-            epb_std = ds[col_epbs].std()
+            epb_std = epbs * 0.05
             
-            epb_mean = ds[col_epbs].mean()
+            epb_error =  epbs * 0.05
             
             for key in out.keys():
                 
