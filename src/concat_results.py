@@ -62,10 +62,13 @@ def concat_results():
     
     return pd.concat([g, i, p, e, d], axis = 1)
 
-def main():
-    df = concat_results()
+# def main():
+    
         
-    df.to_csv('all_results.txt')
+    # 
 
 
 
+# df = concat_results()
+
+# df.to_csv('all_results.txt')

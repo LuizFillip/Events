@@ -64,10 +64,13 @@ def probability_distribuition(
             
             std = ds[col_gamma].std()
             
-            epb_std = epbs * 0.05
+            # try: 
+            #     epb_error = (epbs * 0.05) 
+            # except:
+            #     epb_error =  0
             
-            epb_error =  epbs * 0.05
-            
+            epb_error = (epbs * 0.05) / days
+             
             for key in out.keys():
                 
                 out[key].append(vars()[key])

@@ -23,9 +23,11 @@ def storm_levels(df):
     
     return [week, moderate, intense]
 
-def kp_levels(df):
-    quiet = df[df['kp_max'] <= 3]
+def kp_levels(df, quiet_level = 4):
     
-    disturbed = df[df['kp_max'] > 3]
+    
+    quiet = df[df['kp_max'] <= quiet_level]
+    
+    disturbed = df[df['kp_max'] > quiet_level]
     
     return [quiet, disturbed]
