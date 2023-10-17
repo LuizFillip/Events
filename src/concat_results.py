@@ -1,74 +1,68 @@
 import base as b 
 import pandas as pd
+import os 
+from geophysical_indices import INDEX_PATH
+
+PATH_GAMMA = 'database/Results/gamma/'
+PATH_EPB = 'database/epbs/events_types.txt'
+PATH_PRE = 'digisonde/data/PRE/'
 
 
-def gamma():
+def gamma(site = 'saa'):
     
-    path = 'database/Results/gamma/saa.txt'
-    df = b.load(path).dropna()
-    
-    for col in ['all', 
-                'gravity', 
-                'winds']:
-        
-        df[col] = df[col] * 1e3
-   
-    df = df[~df.index.duplicated(keep = 'first')]
-    
-    df = df.loc[~(df['all'] > 3.5)]
-    
-    return df
+    path = os.path.join(
+       PATH_GAMMA,
+       f't_{site}.txt'
+       )
 
-def indices(df):
-    path = 'database/indices/indeces.txt'
-    ds = b.load(path).dropna()
-    
-    return b.sel_dates(ds, df.index[0], df.index[-1])
-
-
-def epbs(col = -40):
-    
-    path = 'database/epbs/postsunset.txt'
     df = b.load(path)
-    
-    df.rename(columns = {'all': 'epb'}, 
-              inplace = True)
-    return df
+    df = df.loc[~(df['night'] > 0.004)]
+     
+    return df['night']
 
-def dst(df):
-    
-    infile = 'database/indices/kyoto2000.txt'
-    ds = b.load(infile)
-    ds = ds.resample('D').min()
-    return b.sel_dates(ds, df.index[0], df.index[-1])
 
-def pre():
-    path = 'digisonde/data/PRE/saa/2013_2022.txt'
-    df = b.load(path)
-    
-    return df
+def epbs(col = -50):
 
-def concat_results():
-    
-    g = gamma()
-    
-    e = epbs()
-    
-    p = pre()
+    df = b.load(PATH_EPB)
+    df.columns = pd.to_numeric(df.columns)
+    cond = (df[col] == 1) | (df[col] == 0)
+    return df.loc[cond, [col]]
 
-    i = indices(g)
-    
-    d = dst(g)
-    
-    return pd.concat([g, i, p, e, d], axis = 1)
 
-# def main():
+
+def geophysical_index():
     
+    ds = b.load(INDEX_PATH)
+    return ds[['f107a', 'kp', 'dst']].dropna()
+
+def pre(
+        site = 'saa', 
+        years = '2013_2021.txt'
+        ):
+    path = os.path.join(
+        PATH_PRE,
+        site, 
+        years
+        )    
+    return b.load(path)
+
+def concat_results(site = 'saa'):
+    
+    if site == 'saa':
+        col = -50
+    else:
+        col = -80
         
-    # 
+        
+    g = gamma(site)
+    
+    e = epbs(col)
+    
+    i = geophysical_index()
+    
+    return pd.concat([g, i, e], axis = 1).dropna()
 
 
+df = concat_results('saa')
 
-# df = concat_results()
-
-# df.to_csv('all_results.txt')
+# ds
