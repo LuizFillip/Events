@@ -2,6 +2,8 @@ import base as b
 import pandas as pd
 import os 
 from geophysical_indices import INDEX_PATH
+import GEO as gg 
+
 
 PATH_GAMMA = 'database/Results/gamma/'
 PATH_EPB = 'database/epbs/events_types.txt'
@@ -17,7 +19,7 @@ def gamma(site = 'saa'):
 
     df = b.load(path)
     df = df.loc[~(df['night'] > 0.004)]
-     
+    df = df * 1e3
     return df['night']
 
 
@@ -30,7 +32,7 @@ def epbs(col = -50):
 
 
 
-def geophysical_index():
+def geo_index():
     
     ds = b.load(INDEX_PATH)
     return ds[['f107a', 'kp', 'dst']].dropna()
@@ -53,16 +55,27 @@ def concat_results(site = 'saa'):
     else:
         col = -80
         
-        
     g = gamma(site)
     
     e = epbs(col)
+    p = pre(site)
+    i = geo_index()
     
-    i = geophysical_index()
+    ds = pd.concat(
+        [g, i, e, p], axis = 1
+        ).dropna()
     
-    return pd.concat([g, i, e], axis = 1).dropna()
+    ds.columns.name = gg.sites[site]['name']
+    
+    ds.rename(
+        columns = {col: 'epb'}, 
+        inplace = True
+        )
+    return ds
 
 
-df = concat_results('saa')
+# df = concat_results('saa')
 
-# ds
+
+
+# df['vp'].plot()

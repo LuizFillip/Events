@@ -23,18 +23,16 @@ def solar_flux_cycles(
 
 def medium_solar_level(
         df, 
-        flux_col = 'f107a',
-        level = 90, 
-     
+        level = 90,
+        flux_col = 'f107a'
         ):
 
     lower = df.loc[
         df[flux_col] <= level
         ]
     
-  
     high = df.loc[
-        df[flux_col] >= level
+        df[flux_col] > level
         ]
     
     return [lower, high]
@@ -50,15 +48,19 @@ def storm_levels(df):
     
     return [week, moderate, intense]
 
-def kp_levels(df, quiet_level = 4):
+def kp_levels(
+        df, 
+        level = 4, 
+        kp_col = 'kp'
+        ):
     
     
     quiet = df[
-        df['kp_max'] <= quiet_level
+        df[kp_col] <= level
         ]
     
     disturbed = df[
-        df['kp_max'] > quiet_level
+        df[kp_col] > level
         ]
     
     return [quiet, disturbed]
