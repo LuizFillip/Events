@@ -10,7 +10,10 @@ PATH_EPB = 'database/epbs/events_types.txt'
 PATH_PRE = 'digisonde/data/PRE/'
 
 
-def gamma(site = 'saa'):
+def gamma(
+        site = 'saa', 
+        col_g = 'night'
+        ):
     
     path = os.path.join(
        PATH_GAMMA,
@@ -20,7 +23,8 @@ def gamma(site = 'saa'):
     df = b.load(path)
     df = df.loc[~(df['night'] > 0.004)]
     df = df * 1e3
-    return df['night']
+    
+    return df[col_g]
 
 
 def epbs(col = -50):
@@ -48,16 +52,18 @@ def pre(
         )    
     return b.load(path)
 
-def concat_results(site = 'saa'):
+def concat_results(
+        site = 'saa', 
+        col_g = 'night'
+        ):
     
     if site == 'saa':
-        col = -50
+        col_e = -50
     else:
-        col = -80
+        col_e = -80
         
-    g = gamma(site)
-    
-    e = epbs(col)
+    g = gamma(site, col_g)
+    e = epbs(col_e)
     p = pre(site)
     i = geo_index()
     
@@ -68,14 +74,19 @@ def concat_results(site = 'saa'):
     ds.columns.name = gg.sites[site]['name']
     
     ds.rename(
-        columns = {col: 'epb'}, 
+        columns = {
+            col_e: 'epb', 
+            col_g: 'gamma'
+            }, 
         inplace = True
         )
     return ds
 
 
-# df = concat_results('saa')
+# df = concat_results('saa', col_g = 'e_f')
+
+
+# df.loc[df['kp'] < 3]
 
 
 
-# df['vp'].plot()
