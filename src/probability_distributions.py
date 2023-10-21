@@ -75,17 +75,17 @@ def probability_distribuition(
     return pd.DataFrame(out)
 
 
-df = ev.concat_results('saa', col_g = 'e_f')
+# df = ev.concat_results('saa', col_g = 'e_f')
 
-df = df.loc[df['kp'] <= 3]
+# df = df.loc[df['kp'] <= 3]
 
-ds = probability_distribuition(
-        df,
-        step = 0.2
-        )
-
-
-# plt.plot(ds.mean, ds.rate)
+# ds = probability_distribuition(
+#         df,
+#         step = 0.2
+#         )
 
 
-ds
+# # plt.plot(ds.mean, ds.rate)
+
+
+# ds
