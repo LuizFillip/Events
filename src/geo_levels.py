@@ -1,6 +1,6 @@
 def solar_flux_cycles(
         df, 
-        flux_col = 'f107a',
+        flux_col = 'f107',
         lower_level = 90, 
         high_level = 120
         ):
@@ -21,10 +21,10 @@ def solar_flux_cycles(
     
     return [lower, medium, high]
 
-def medium_solar_level(
+def solar_levels(
         df, 
-        level = 90,
-        flux_col = 'f107a'
+        level = 100,
+        flux_col = 'f107'
         ):
 
     lower = df.loc[

@@ -1,13 +1,12 @@
 import pandas as pd
 import numpy as np
-from math import floor, ceil
-import base as b 
-import events as ev
+import events as ev 
 
 
 def probability_distribuition(
         df,
-        step = 0.2
+        limits = (0, 3.2, 0.2),
+        col = 'gamma'
         ):
     
     """
@@ -15,17 +14,9 @@ def probability_distribuition(
     Read and concatenate growth rate
     and EPBs occurrence
     """
+    vmin, vmax, step = limits 
     
-   
-    # bins = np.arange(
-    #     floor(df['gamma'].min()), 
-    #     ceil(df['gamma'].max()), 
-    #     step
-    #     )
-    
-    
-    bins = np.arange(0, 3.6, step)
- 
+    bins = np.arange(vmin, vmax, step)
  
     out = {
            
@@ -43,14 +34,13 @@ def probability_distribuition(
  
     for i in range(len(bins) - 1):
         
-        
         start, end = bins[i], bins[i + 1]
         
         ds = df.loc[
-            (df['gamma'] > start) & 
-            (df['gamma'] <= end)
+            (df[col] > start) & 
+            (df[col] <= end)
             ]
-        
+
         if len(ds) == 0:
             pass
         else:
@@ -60,32 +50,22 @@ def probability_distribuition(
             
             rate = epbs / days
             
-            mean = ds['gamma'].mean()
+            mean = ds[col].mean()
             
-            std = ds['gamma'].std()
+            std = ds[col].std()
                         
             epb_error = (epbs * 0.05) / days
              
             for key in out.keys():
                 
                 out[key].append(vars()[key])
-    #df = 
-    # df = df.loc[~ ((df['days']==1) &
-    #                 (df['epbs'] == 1))]
+   
     return pd.DataFrame(out)
 
 
-# df = ev.concat_results('saa', col_g = 'e_f')
 
-# df = df.loc[df['kp'] <= 3]
-
-# ds = probability_distribuition(
-#         df,
-#         step = 0.2
-#         )
-
-
-# # plt.plot(ds.mean, ds.rate)
-
-
-# ds
+def test():
+    df = ev.concat_results(
+        'saa', col_g = 'e_f')
+    
+    ds = probability_distribuition(df)

@@ -1,14 +1,14 @@
 import base as b 
 import pandas as pd
 import os 
-from geophysical_indices import INDEX_PATH
+import RayleighTaylor as rt 
 import GEO as gg 
 
 
 PATH_GAMMA = 'database/Results/gamma/'
 PATH_EPB = 'database/epbs/events_types.txt'
 PATH_PRE = 'digisonde/data/PRE/'
-
+PATH_INDEX=  'database/indices/omni_pro.txt'
 
 def gamma(
         site = 'saa', 
@@ -27,6 +27,12 @@ def gamma(
     return df[col_g]
 
 
+# df = concat_results('saa', col_g = 'e_f')
+
+
+
+
+
 def epbs(col = -50):
 
     df = b.load(PATH_EPB)
@@ -38,8 +44,8 @@ def epbs(col = -50):
 
 def geo_index():
     
-    ds = b.load(INDEX_PATH)
-    return ds[['f107a', 'kp', 'dst']].dropna()
+    ds = b.load(PATH_INDEX)
+    return ds[['f107a', 'f107', 'kp', 'dst']].dropna()
 
 def pre(
         site = 'saa', 
@@ -61,8 +67,10 @@ def concat_results(
         col_e = -50
     else:
         col_e = -80
-        
-    g = gamma(site, col_g)
+    
+    g = rt.parameters2()
+
+    g = g[['gravity', 'gamma']] *1e3
     e = epbs(col_e)
     p = pre(site)
     i = geo_index()
@@ -76,17 +84,22 @@ def concat_results(
     ds.rename(
         columns = {
             col_e: 'epb', 
-            col_g: 'gamma'
+            # col_g: 'gamma'
             }, 
         inplace = True
         )
     return ds
 
 
-# df = concat_results('saa', col_g = 'e_f')
+# g = rt.parameters2()
 
+ 
 
-# df.loc[df['kp'] < 3]
+# g = g[['gravity', 'gamma']]
 
+# g.plot()
 
-
+# concat_results(
+#         site = 'saa', 
+#         col_g = 'night'
+#         )
