@@ -15,8 +15,7 @@ def get_filters_lists(
         clon, 
         clat, 
         radius, 
-        year = 2021,
-        num_rem = 2
+        year = 2021
         ):
     
     names, lon, lat = gg.arr_coords(year)
@@ -41,14 +40,8 @@ def fixed_lits(receivers, num_rem = 2):
     return (list_0, list_1, list_2, list_3, list_4)
 
 
-def random_lists(receivers):
-    
-    out = {}
-    for i in range(1, 11, 2):
-        
-        out[i] = random.sample(receivers, i)
-
-    return out
+def random_lists(receivers, max_r = 11):
+    return {i: random.sample(receivers, i) for i in range(1, max_r, 2)}
 
 
 def max_by_receivers(path, receivers):
@@ -122,8 +115,35 @@ def run():
         
         run_days(year, root)
         
-clon, clat, radius = -45, -5, 6
-year = 2019
+def get_receivers_lists():
+
+    out = {}
+    
+    
+    for doy in tqdm(range(1, 366, 1)):
+        path = gs.paths(
+             year, doy
+             )
+        
+        df = pb.load_filter(
+            path.fn_roti, 
+            factor = 3
+            )
+    
+        out[doy] = list(df['sts'].unique())
+        
+        
+    import json 
+    
+    
+    main_json = 'stations.json'
+    with open(main_json, "w") as f:
+        json.dump(out, f)
+
+        
+clon, clat, radius = -45, -5, 5
+
+year = 2014
 
 receivers = get_filters_lists(
         clon, 
@@ -132,4 +152,66 @@ receivers = get_filters_lists(
         year
         )
 
-random_lists(receivers)
+receivers = ['cesb', 'saga', 'ceeu', 
+             'paat', 'rnmo', 'past', 
+             'amco', 'brft', 'pisr']
+
+
+# random_lists(receivers, max_r = 11)
+root = os.getcwd()
+
+
+doy = 1
+
+path = gs.paths(
+     year, doy, root
+     )
+
+df = pb.load_filter(
+    path.fn_roti, 
+    factor = 3
+    )
+ 
+# out = []
+
+
+
+# for receiver in receivers:
+    
+#     ds1 = df.loc[df['sts'].isin([receiver])]
+    
+#     # print(ds1)
+            
+#     out.append(
+#         pb.time_dataset(
+#             ds1, 
+#             receiver, 
+#             times
+#             )
+#         )
+
+
+# pd.concat(out, axis = 1).round(4)
+
+
+out = {}
+
+
+# for doy in tqdm(range(1, 366, 1)):
+# path = gs.paths(
+#      year, doy
+#      )
+
+df = pb.load_filter(
+    path.fn_roti, 
+    factor = 3
+    )
+
+times = pb.time_range(df)
+
+
+for sts in list(df['sts'].unique()):
+    
+    ds1 = df.loc[df['sts'].isin([sts])]
+    
+    print(ds1)
