@@ -68,7 +68,7 @@ def concat_results(
     else:
         col_e = -80
     
-    g = rt.parameters2()
+    g = rt.load_grt(site)
 
     g = g[['gravity', 'gamma']] *1e3
     e = epbs(col_e)
