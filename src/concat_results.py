@@ -27,12 +27,6 @@ def gamma(
     return df[col_g]
 
 
-# df = concat_results('saa', col_g = 'e_f')
-
-
-
-
-
 def epbs(col = -50):
 
     df = b.load(PATH_EPB)
@@ -76,7 +70,8 @@ def concat_results(
     i = geo_index()
     
     ds = pd.concat(
-        [g, i, e, p], axis = 1
+        [g, i, e, p], 
+        axis = 1
         ).dropna()
     
     ds.columns.name = gg.sites[site]['name']
@@ -91,13 +86,7 @@ def concat_results(
     return ds
 
 
-# g = rt.parameters2()
 
- 
-
-# g = g[['gravity', 'gamma']]
-
-# g.plot()
 
 # concat_results(
 #         site = 'saa', 
