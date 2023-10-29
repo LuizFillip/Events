@@ -3,12 +3,12 @@ import pandas as pd
 import os 
 import RayleighTaylor as rt 
 import GEO as gg 
-
+import datetime as dt
 
 PATH_GAMMA = 'database/Results/gamma/'
 PATH_EPB = 'database/epbs/events_types.txt'
 PATH_PRE = 'digisonde/data/PRE/'
-PATH_INDEX=  'database/indices/omni_pro.txt'
+PATH_INDEX =  'database/indices/omni_pro.txt'
 
 def gamma(
         site = 'saa', 
@@ -31,14 +31,32 @@ def epbs(col = -50):
 
     df = b.load(PATH_EPB)
     df.columns = pd.to_numeric(df.columns)
+    
+    df = df.replace(2, 1)
+    
     cond = (df[col] == 1) | (df[col] == 0)
-    return df.loc[cond, [col]]
+    ds =  df.loc[cond, [col]]
+    
+    ds.rename(
+        columns = {
+            col: 'epb'
+            }, 
+        inplace = True
+        )
+    
+    return ds
+
 
 
 
 def geo_index():
     
     ds = b.load(PATH_INDEX)
+    ds["f107a"] = ds["f107"].rolling(window = 81).mean()
+    start = dt.datetime(2013, 1, 1)
+    end = dt.datetime(2022, 12, 1)
+    ds = b.sel_dates(ds, start, end)
+    
     return ds[['f107a', 'f107', 'kp', 'dst']].dropna()
 
 def pre(
@@ -72,17 +90,11 @@ def concat_results(
     ds = pd.concat(
         [g, i, e, p], 
         axis = 1
-        ).dropna()
+        )#.dropna()
     
     ds.columns.name = gg.sites[site]['name']
     
-    ds.rename(
-        columns = {
-            col_e: 'epb', 
-            # col_g: 'gamma'
-            }, 
-        inplace = True
-        )
+    
     return ds
 
 

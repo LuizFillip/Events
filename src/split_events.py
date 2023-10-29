@@ -1,5 +1,7 @@
 import events as ev 
 import pandas as pd 
+import numpy as np 
+
 
 def percent(frac, total):
     
@@ -46,10 +48,16 @@ def geomanetic_by_solar(
 
     ds['total'] = ds.sum(axis = 1)
 
-    ds.loc['total',:] = ds.sum(axis=0)
+    ds.loc['total', :] = ds.sum(axis=0)
     
     return ds
 
+
+# ds = geomanetic_by_solar(
+#         df, 
+#         percent_like = False
+#         )
+# 
 
 def monthly_occurences(df, col = 'epb'):
     
@@ -69,14 +77,27 @@ def monthly_occurences(df, col = 'epb'):
 
 
 # df = ev.concat_results('saa')
-
- 
-# level = 86
-
-
-
-# ds = geomanetic_by_solar(
-#         df, 
-#         percent_like = False
-#         )
 # 
+# df = ev.epbs()
+ 
+# level = 861
+
+def yearly_occcurrences(df):
+    
+    years = np.unique(df.index.year)
+    
+    out = {'epb': [], 'no_epb': []}
+    
+    for year in years:
+    
+        df_yr = df.loc[
+            df.index.year == year, 'epb'
+            ]
+        
+        out['epb'].append((df_yr == 1).sum())
+        out['no_epb'].append((df_yr == 0).sum())
+        
+    return pd.DataFrame(out, index = years)
+        
+
+
