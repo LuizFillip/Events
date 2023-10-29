@@ -1,12 +1,6 @@
 import events as ev 
 import pandas as pd 
 
-
-
-
-
-  
-
 def percent(frac, total):
     
     return len(frac) / len(total) * 100
@@ -56,15 +50,6 @@ def geomanetic_by_solar(
     
     return ds
 
-# ds = geomanetic_by_solar(
-#         df, 
-#         percent_like = False
-#         )
-
-
-
-
-
 
 def monthly_occurences(df, col = 'epb'):
     
@@ -83,11 +68,15 @@ def monthly_occurences(df, col = 'epb'):
     return pd.DataFrame(out, index = months)
 
 
-df = ev.concat_results('saa')
+# df = ev.concat_results('saa')
 
  
-level = 86
+# level = 86
 
 
 
-
+# ds = geomanetic_by_solar(
+#         df, 
+#         percent_like = False
+#         )
+# 
