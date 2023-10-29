@@ -20,3 +20,13 @@ for df in solar_dfs:
     no_epb = len(df.loc[df['epb'] == 0])
     
     print(epb, no_epb, len(df))
+    
+    
+solar = ['low', 'high']
+for i, ds in enumerate(solar_dfs):
+    
+    quiet = ds.loc[ds['kp'] <= 3]
+    distu = ds.loc[ds['kp'] > 3]
+    print(solar[i], 'quiet', len(quiet) / len(df) *100)
+    print(solar[i], 'disturded', len(distu) / len(df) *100)
+    
