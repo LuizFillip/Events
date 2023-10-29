@@ -24,8 +24,3 @@ def get_closest_iono(fn_sky, iono_dir):
     code = files[0].split('_')[0]
         
     return dn.strftime(f"{code}_%Y%m%d(%j)%H%M%S.PNG")
-
-# iono_dir = 'digisonde/data/ionogram/20130610S'
-
-# d  = os.listdir(iono_dir)[0]
-

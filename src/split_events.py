@@ -1,22 +1,11 @@
 import events as ev 
 import pandas as pd 
 
-df = ev.concat_results('saa')
-
-col = 'gamma'
- 
-
-solar_level = 86
 
 
 
 
-
-# for df in solar_dfs:
-#     epb = len(df.loc[df['epb'] == 1])
-#     no_epb = len(df.loc[df['epb'] == 0])
-        
-    
+  
 
 def percent(frac, total):
     
@@ -67,9 +56,38 @@ def geomanetic_by_solar(
     
     return ds
 
-ds = geomanetic_by_solar(
-        df, 
-        percent_like = False
-        )
+# ds = geomanetic_by_solar(
+#         df, 
+#         percent_like = False
+#         )
 
-ds
+
+
+
+
+
+def monthly_occurences(df, col = 'epb'):
+    
+    out = {'epb': [], 'no_epb': []}
+    months = list(range(1, 13, 1))
+    
+    for month in months:
+        
+        df_mon = df.loc[
+            df.index.month == month, 
+            col
+            ]
+        out['epb'].append((df_mon == 1).sum())
+        out['no_epb'].append((df_mon == 0).sum())
+    
+    return pd.DataFrame(out, index = months)
+
+
+df = ev.concat_results('saa')
+
+ 
+level = 86
+
+
+
+
