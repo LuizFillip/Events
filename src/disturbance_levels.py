@@ -37,7 +37,7 @@ def solar_levels(
     
     return [lower, high]
 
-def storm_levels(df):
+def dst_levels(df):
     
     week = df[(df['dst'] > -50)]
     
@@ -50,7 +50,7 @@ def storm_levels(df):
 
 def kp_levels(
         df, 
-        level = 4, 
+        level = 3, 
         kp_col = 'kp'
         ):
     
