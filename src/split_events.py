@@ -82,7 +82,7 @@ def monthly_occurences(df, col = 'epb'):
  
 # level = 861
 
-def yearly_occcurrences(df):
+def yearly_occurrences(df):
     
     years = np.unique(df.index.year)
     

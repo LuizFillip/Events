@@ -140,78 +140,35 @@ def get_receivers_lists():
     with open(main_json, "w") as f:
         json.dump(out, f)
 
-        
-clon, clat, radius = -45, -5, 5
 
-year = 2014
-
-receivers = get_filters_lists(
-        clon, 
-        clat, 
-        radius, 
-        year
+def test():
+    clon, clat, radius = -45, -5, 5
+    
+    year = 2014
+    
+    receivers = get_filters_lists(
+            clon, 
+            clat, 
+            radius, 
+            year
+            )
+    
+    receivers = ['cesb', 'saga', 'ceeu', 
+                 'paat', 'rnmo', 'past', 
+                 'amco', 'brft', 'pisr']
+    
+    
+    # random_lists(receivers, max_r = 11)
+    root = os.getcwd()
+    
+    
+    doy = 1
+    
+    path = gs.paths(
+         year, doy, root
+         )
+    
+    df = pb.load_filter(
+        path.fn_roti, 
+        factor = 3
         )
-
-receivers = ['cesb', 'saga', 'ceeu', 
-             'paat', 'rnmo', 'past', 
-             'amco', 'brft', 'pisr']
-
-
-# random_lists(receivers, max_r = 11)
-root = os.getcwd()
-
-
-doy = 1
-
-path = gs.paths(
-     year, doy, root
-     )
-
-df = pb.load_filter(
-    path.fn_roti, 
-    factor = 3
-    )
- 
-# out = []
-
-
-
-# for receiver in receivers:
-    
-#     ds1 = df.loc[df['sts'].isin([receiver])]
-    
-#     # print(ds1)
-            
-#     out.append(
-#         pb.time_dataset(
-#             ds1, 
-#             receiver, 
-#             times
-#             )
-#         )
-
-
-# pd.concat(out, axis = 1).round(4)
-
-
-out = {}
-
-
-# for doy in tqdm(range(1, 366, 1)):
-# path = gs.paths(
-#      year, doy
-#      )
-
-df = pb.load_filter(
-    path.fn_roti, 
-    factor = 3
-    )
-
-times = pb.time_range(df)
-
-
-for sts in list(df['sts'].unique()):
-    
-    ds1 = df.loc[df['sts'].isin([sts])]
-    
-    print(ds1)

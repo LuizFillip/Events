@@ -94,13 +94,9 @@ def concat_results(
     
     ds.columns.name = gg.sites[site]['name']
     
+    ds['doy'] = ds.index.day_of_year.copy()
+
     
     return ds
 
 
-
-
-# concat_results(
-#         site = 'saa', 
-#         col_g = 'night'
-#         )
