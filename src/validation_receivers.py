@@ -41,7 +41,8 @@ def fixed_lits(receivers, num_rem = 2):
 
 
 def random_lists(receivers, max_r = 11):
-    return {i: random.sample(receivers, i) for i in range(1, max_r, 2)}
+    return {i: random.sample(receivers, i) 
+            for i in range(1, max_r, 2)}
 
 
 def max_by_receivers(path, receivers):
@@ -115,7 +116,7 @@ def run():
         
         run_days(year, root)
         
-def get_receivers_lists():
+def get_receivers_lists(year):
 
     out = {}
     

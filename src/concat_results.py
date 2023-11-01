@@ -82,7 +82,7 @@ def concat_results(
     
     g = rt.load_grt(site)
 
-    g = g[['gravity', 'gamma']] *1e3
+    g = g[['gravity', 'gamma']] * 1e3
     e = epbs(col_e)
     p = pre(site)
     i = geo_index()
@@ -90,7 +90,7 @@ def concat_results(
     ds = pd.concat(
         [g, i, e, p], 
         axis = 1
-        )#.dropna()
+        ).dropna()
     
     ds.columns.name = gg.sites[site]['name']
     
