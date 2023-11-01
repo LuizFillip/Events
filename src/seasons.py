@@ -25,22 +25,4 @@ def seasons(df, month = 6):
     return df.loc[cond]
 
 
-def split_in_equal_parts(
-        arr, 
-        parts = 2
-        ):
-    length = len(arr)
-    
-    msg = f"Cannot be divided into {parts} equal parts."
-    
-    if length % parts != 0:
-        raise ValueError(msg)
-    
-    part_size = length // parts
-    
-    part1 = arr[:part_size]
-    part2 = arr[part_size:2*part_size]
-    part3 = arr[2*part_size:]
-    
-    return part1, part2, part3
 
