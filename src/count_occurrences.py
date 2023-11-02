@@ -1,8 +1,10 @@
 import pandas as pd 
 import numpy as np 
+from events import concat_results, solar_levels, epbs
 
 
-def monthly_occurences(df, col = 'epb'):
+
+def monthly_occurrences(df, col = 'epb'):
     
     out = {'epb': [], 'no_epb': []}
     months = list(range(1, 13, 1))
@@ -35,3 +37,10 @@ def yearly_occurrences(df):
         out['no_epb'].append((df_yr == 0).sum())
         
     return pd.DataFrame(out, index = years)
+
+df = concat_results('saa')
+
+df  = epbs(class_epb = 'sunset')
+
+ds = yearly_occurrences(df, col = 'epb')
+

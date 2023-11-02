@@ -1,7 +1,5 @@
 from events import concat_results, solar_levels
 
-        
-
 
 def split_in_equal_parts(
         arr, 

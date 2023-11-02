@@ -27,12 +27,17 @@ def gamma(
     return df[col_g]
 
 
-def epbs(col = -50):
+def epbs(col = -50, class_epb = 'sunset'):
 
     df = b.load(PATH_EPB)
     df.columns = pd.to_numeric(df.columns)
     
-    df = df.replace(2, 1)
+    if class_epb == 'sunset':
+        df = df.replace(2, 1)
+        df = df.replace((3, 4), (0, 0))
+    else:
+        df = df.replace((3, 4), (1, 1))
+        df = df.replace((2, 1), (0, 0))
     
     cond = (df[col] == 1) | (df[col] == 0)
     ds =  df.loc[cond, [col]]

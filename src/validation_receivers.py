@@ -142,34 +142,4 @@ def get_receivers_lists(year):
         json.dump(out, f)
 
 
-def test():
-    clon, clat, radius = -45, -5, 5
-    
-    year = 2014
-    
-    receivers = get_filters_lists(
-            clon, 
-            clat, 
-            radius, 
-            year
-            )
-    
-    receivers = ['cesb', 'saga', 'ceeu', 
-                 'paat', 'rnmo', 'past', 
-                 'amco', 'brft', 'pisr']
-    
-    
-    # random_lists(receivers, max_r = 11)
-    root = os.getcwd()
-    
-    
-    doy = 1
-    
-    path = gs.paths(
-         year, doy, root
-         )
-    
-    df = pb.load_filter(
-        path.fn_roti, 
-        factor = 3
-        )
+
