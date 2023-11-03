@@ -1,6 +1,3 @@
-from events import concat_results, solar_levels
-
-
 def split_in_equal_parts(
         arr, 
         parts = 3
@@ -29,21 +26,6 @@ def limits_on_parts(df, parts = 2):
     
     arr_splited = arr_splited[:parts - 1]
     
-    return [p[-1] for p in arr_splited if len(p) != 0]
+    return [round(p[-1], 2) for p in arr_splited 
+            if len(p) != 0]
 
-
-def test_splited():
-    
-    df = concat_results('saa')
-    
-    limits = limits_on_parts(df['f107a'], parts = 3)
-    
-    for ds in solar_levels(
-            df, 
-            level = limits,
-            flux_col = 'f107a'
-            ):
-        
-        print(len(ds), ds.head())
-        
-    
