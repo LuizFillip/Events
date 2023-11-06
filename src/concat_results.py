@@ -7,6 +7,7 @@ import datetime as dt
 
 PATH_GAMMA = 'database/Results/gamma/'
 PATH_EPB = 'database/epbs/events_types.txt'
+PATH_EPB = 'database/epbs/events_class.txt'
 PATH_PRE = 'digisonde/data/PRE/'
 PATH_INDEX =  'database/indices/omni_pro.txt'
 
@@ -27,47 +28,75 @@ def gamma(
     return df[col_g]
 
 
-def epbs(col = -50, class_epb = 'sunset'):
+def epbs(
+        col = -50, 
+        class_epb = 'sunset',
+        geo = False
+        ):
 
     df = b.load(PATH_EPB)
     df.columns = pd.to_numeric(df.columns)
     
-    if class_epb == 'sunset':
-        df = df.replace(2, 1)
-        df = df.replace((3, 4), (0, 0))
+    
+    
+    if class_epb  == 'sunset':
+        
+        # df = df.replace((2, 3, 4), (0, 0, 0))
+        df = df.replace(
+            ( class_epb , 
+              'no_epb', 'midnight'), (1, 0, 0)
+            )
     else:
-        df = df.replace((3, 4), (1, 1))
-        df = df.replace((2, 1), (0, 0))
+        df = df.replace(
+            ( class_epb ,
+              'no_epb', 'sunset'), (1, 0, 0)
+            )
+     
+    if col is not None:
+        df = df.loc[:, [col]]
+        df.rename(
+            columns = {
+                col: 'epb'
+                }, 
+            inplace = True
+            )
+        
+    if geo:
+        df = pd.concat(
+            [df, geo_index()], 
+            axis = 1
+            ).dropna()
+        
+    return df
     
-    cond = (df[col] == 1) | (df[col] == 0)
-    ds =  df.loc[cond, [col]]
-    
-    ds.rename(
-        columns = {
-            col: 'epb'
-            }, 
-        inplace = True
-        )
-    
-    return ds
 
 
 
 
-def geo_index():
+def geo_index(
+        cols = ['f107a', 'f107', 'kp', 'dst'],
+        syear = 2013, 
+        eyear = 2022
+        ):
     
     ds = b.load(PATH_INDEX)
-    ds["f107a"] = ds["f107"].rolling(window = 81).mean()
-    start = dt.datetime(2013, 1, 1)
-    end = dt.datetime(2022, 12, 1)
+    
+    ds["f107a"] = ds["f107"].rolling(
+        window = 81
+        ).mean()
+    
+    start = dt.datetime(syear, 1, 1)
+    end = dt.datetime(eyear, 12, 31)
+    
     ds = b.sel_dates(ds, start, end)
     
-    return ds[['f107a', 'f107', 'kp', 'dst']].dropna()
+    return ds[cols].dropna()
 
 def pre(
         site = 'saa', 
         years = '2013_2021.txt'
         ):
+    
     path = os.path.join(
         PATH_PRE,
         site, 
@@ -77,7 +106,7 @@ def pre(
 
 def concat_results(
         site = 'saa', 
-        col_g = 'night'
+        class_epb = 'sunset'
         ):
     
     if site == 'saa':
@@ -88,7 +117,7 @@ def concat_results(
     g = rt.load_grt(site)
 
     g = g[['gravity', 'gamma']] * 1e3
-    e = epbs(col_e)
+    e = epbs(col_e, class_epb)
     p = pre(site)
     i = geo_index()
     
@@ -105,3 +134,10 @@ def concat_results(
     return ds
 
 
+
+df = epbs(
+        col = -50, 
+        class_epb = 'sunset'
+        )
+
+df
