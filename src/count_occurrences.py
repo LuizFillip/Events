@@ -30,14 +30,16 @@ def month_to_month_occurrence(
         freq = "1M"
         )
 
-    count_epb = count_epb.reindex(
+    ds = count_epb.reindex(
         pd.PeriodIndex(
             new_index, 
             freq = "M"
             )
         )
     
-    return count_epb 
+    ds.index = ds.index.to_timestamp()
+
+    return ds
 
 
 def month_occurrence(
