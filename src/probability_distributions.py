@@ -1,11 +1,21 @@
 import pandas as pd
 import numpy as np
-import events as ev 
+import core as c
+
+def limits(col):
+    if col == 'gamma':
+        vmin, vmax, step = 0, 3.5, 0.2
+    elif col == 'vp':
+        vmin, vmax, step = 0, 85, 5
+    else:
+        vmin, vmax, step = 0, 1, 0.05
+        
+    return (vmin, vmax, step)
+
 
 
 def probability_distribuition(
         df,
-        limits = (0, 3.2, 0.2),
         col = 'gamma'
         ):
     
@@ -14,7 +24,7 @@ def probability_distribuition(
     Read and concatenate growth rate
     and EPBs occurrence
     """
-    vmin, vmax, step = limits 
+    vmin, vmax, step = limits(col)
     
     bins = np.arange(vmin, vmax, step)
  
@@ -65,7 +75,9 @@ def probability_distribuition(
 
 
 def test():
-    df = ev.concat_results(
+    df = c.concat_results(
         'saa', col_g = 'e_f')
     
     ds = probability_distribuition(df)
+    
+    return ds
