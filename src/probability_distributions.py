@@ -70,7 +70,14 @@ def probability_distribuition(
                 
                 out[key].append(vars()[key])
    
-    return pd.DataFrame(out)
+    ds = pd.DataFrame(out)
+    
+    ds = ds.loc[~(
+        (ds['days'] == 1) & 
+        (ds['epbs'] == 1))
+        ]
+    
+    return ds
 
 
 
