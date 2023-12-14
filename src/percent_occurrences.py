@@ -7,7 +7,8 @@ def percent(frac, total):
 
 def geomanetic_by_solar(
         df, 
-        percent_like = False
+        percent_like = False,
+        level = 86
         ):
     
     total = df.copy()
@@ -21,7 +22,7 @@ def geomanetic_by_solar(
     
     solar_dfs =  ev.solar_levels(
         df, 
-        level = 86,
+        level = level,
         flux_col = 'f107a'
         )
     
@@ -32,15 +33,13 @@ def geomanetic_by_solar(
         
         if percent_like:
             
-            for r in out.keys():
+            for key in out.keys():
                 
-                out[r].append(
-                    percent(vars()[r], total)
-                )
+                out[key].append(percent(vars()[key], total))
         else:  
             
-            for r in out.keys():
-                out[r].append(len(vars()[r]))
+            for key in out.keys():
+                out[key].append(len(vars()[key]))
         
     ds = pd.DataFrame(out, index = solar)
 
