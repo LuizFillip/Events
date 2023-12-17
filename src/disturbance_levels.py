@@ -4,7 +4,7 @@ def solar_levels(
         flux_col = 'f107a'
         ):
     
-    if isinstance(level, int):
+    if isinstance(level, (int, float)):
         level = [level]
     
     if len(level) == 1:

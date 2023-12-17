@@ -26,6 +26,12 @@ def limits_on_parts(df, parts = 2):
     
     arr_splited = arr_splited[:parts - 1]
     
-    return [round(p[-1], 2) for p in arr_splited 
+    lst = [round(p[-1], 2) for p in arr_splited 
             if len(p) != 0]
+    
+    if len(lst) == 1:
+        return lst[0]
+    
+    else:
+        return lst
 

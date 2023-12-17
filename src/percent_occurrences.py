@@ -35,7 +35,9 @@ def geomanetic_by_solar(
             
             for key in out.keys():
                 
-                out[key].append(percent(vars()[key], total))
+                out[key].append(
+                    percent(vars()[key], total)
+                    )
         else:  
             
             for key in out.keys():
