@@ -43,13 +43,15 @@ def find_supressions(df,  days = 5, col = 'epb'):
 
 
 
-days = 4
-
-
-df = c.concat_results('saa')
-
-ds = find_supressions(df, days = days)
 
 
 def suppression_days(ds):
     return ds.loc[ds['epb'] == 0]
+
+
+def main():
+    days = 4
+    
+    df = c.concat_results('saa')
+
+    ds = find_supressions(df, days = days)

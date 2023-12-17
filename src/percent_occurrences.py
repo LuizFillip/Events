@@ -1,4 +1,4 @@
-import events as ev 
+import core as c
 import pandas as pd 
 
 def percent(frac, total):
@@ -20,7 +20,7 @@ def geomanetic_by_solar(
     
     solar = ['low', 'high']
     
-    solar_dfs =  ev.solar_levels(
+    solar_dfs = c.solar_levels(
         df, 
         level = level,
         flux_col = 'f107a'
@@ -48,3 +48,18 @@ def geomanetic_by_solar(
     ds.loc['total', :] = ds.sum(axis=0)
     
     return ds
+
+df = c.concat_results('saa')
+
+limit = c.limits_on_parts(df['f107a'], parts = 2)
+
+# limit = 86
+
+geomanetic_by_solar(
+        df, 
+        percent_like = False,
+        level = limit
+        )
+
+# df['gamma'].plot()
+
