@@ -130,14 +130,17 @@ def concat_results(
     
     ds['doy'] = ds.index.day_of_year.copy()
 
-    
+    ds = ds.loc[~((ds['gamma'] > 4) |
+                  (ds['vp'] < 0))]
     return ds
 
 
 
-df = epbs(
-        col = -50, 
-        class_epb = 'sunset'
-        )
+# df = concat_results(
+#         site = 'saa', 
+#         class_epb = 'sunset'
+#         )
 
-df
+# df['gamma'].plot()
+
+# len(df) // 2

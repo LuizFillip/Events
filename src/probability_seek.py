@@ -17,9 +17,10 @@ df =  c.solar_levels(
 
 # print(df.loc[(df[col] > 2) & (df[col] <= 2.2)])
 
-ds = c.probability_distribuition(
+ds = c.probability_distribution(
     df,
     col
     )
 
 ds
+

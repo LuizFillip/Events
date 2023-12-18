@@ -49,17 +49,17 @@ def geomanetic_by_solar(
 
     ds.loc['total', :] = ds.sum(axis=0)
     
+    ds.columns.name = limit
+    
     return ds
 
 df = c.concat_results('saa')
 
 limit = c.limits_on_parts(df['f107a'], parts = 2)
 
-# limit = 86
-
 geomanetic_by_solar(
         df, 
-        percent_like = False,
+        percent_like = True,
         level = limit
         )
 
