@@ -24,7 +24,7 @@ def offset(days):
         return days // 2
 
 
-def find_supressions(df,  days = 5, col = 'epb'):
+def find_supressions(df, days = 5, col = 'epb'):
    
    out = []
    for i, row in enumerate(df[col]):
@@ -37,21 +37,45 @@ def find_supressions(df,  days = 5, col = 'epb'):
            lst_remo = remove_middle(lst.values)
            
            if all(x == 1 for x in lst_remo):
-               out.append(lst)
+               out.append(lst.to_frame(col))
     
-   return pd.concat(out).to_frame(col)
+   return out
 
 
 
 
 
-def suppression_days(ds):
-    return ds.loc[ds['epb'] == 0]
+import PlasmaBubbles as pb 
+import os 
+import base as b 
+import datetime as dt 
+
+def suppression_days(out, col = 'epb'):
+    ds = pd.concat(out)
+    return ds.loc[ds[col] == 0]
 
 
-def main():
-    days = 4
-    
-    df = c.concat_results('saa')
+# def main():
+days = 4
 
-    ds = find_supressions(df, days = days)
+df = c.concat_results('saa')
+
+ds = find_supressions(df, days = days)[4]
+
+delta = dt.timedelta(days = 7)
+
+start = ds.index[2]
+end = ds.index[-1]
+
+path = pb.epb_path(
+    start.year, 
+    root = os.getcwd(), 
+    path = 'longs'
+    )
+
+df = b.sel_dates(
+    b.load(path), start, end)
+col = '-50'
+df[col].plot(ylim = [0, 4])
+
+ds
