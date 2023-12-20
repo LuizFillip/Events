@@ -1,13 +1,8 @@
 import core as c
-import base as b 
-import matplotlib.pyplot as plt
 import numpy as np
 
 
-df = c.concat_results('saa')
 
-
-ranges = np.arange(0, 4, 0.8)  
 
 def count_occurrences_in_range(
         df, col_name,lower, upper):
@@ -16,10 +11,11 @@ def count_occurrences_in_range(
               (df[col_name] < upper)].shape[0]
 
 
-def occurrences_by_range():
+def occurrences_by_range(df):
+    
+    ranges = np.arange(0, 4, 0.8)  
     
     out = {}
-   
 
     for i in range(len(ranges) - 1):
     
@@ -29,3 +25,8 @@ def occurrences_by_range():
         out[lower] = occurrences
         
     return out
+
+
+df = c.concat_results('saa')
+
+
