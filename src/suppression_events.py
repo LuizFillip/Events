@@ -1,27 +1,24 @@
 import pandas as pd
 import core as c
 import numpy as np
+import PlasmaBubbles as pb 
+import os 
+import base as b 
+import RayleighTaylor as rt
 
 
 def remove_middle(arr):
-    middle_index = len(arr) // 2
+    middle = len(arr) // 2
 
     if len(arr) % 2 == 0:
         
         arr = np.delete(
-            arr, [middle_index - 1, middle_index])
+            arr, [middle - 1, middle])
     else:
        
-        arr = np.delete(arr, middle_index)
+        arr = np.delete(arr, middle)
 
     return arr
-
-
-def offset(days):
-    if days % 2 == 0:
-        raise('number the days must be odd')
-    else:
-        return days // 2
 
 
 def find_supressions(df, days = 5, col = 'epb'):
@@ -41,41 +38,59 @@ def find_supressions(df, days = 5, col = 'epb'):
     
    return out
 
-
-
-
-
-import PlasmaBubbles as pb 
-import os 
-import base as b 
-import datetime as dt 
-
 def suppression_days(out, col = 'epb'):
     ds = pd.concat(out)
     return ds.loc[ds[col] == 0]
 
+def load_base_roti(ds):
+        
+    start = ds.index[2]
+    end = ds.index[-1]
+    
+    path = pb.epb_path(
+        start.year, 
+        root = os.getcwd(), 
+        path = 'longs'
+        )
+    
+    return b.sel_dates(b.load(path), start, end)
 
-# def main():
-days = 4
+def load_base_gamma(ds):
+
+    ds1 = rt.gammas_integrated(
+        rt.FluxTube_dataset(
+            year = 2013, 
+            site = "saa"
+            ))
+    
+    start = ds.index[2]
+    end = ds.index[-1]
+    
+    ds1['gamma'] = ds1['gamma'] * 1e3
+    return b.sel_dates(ds1, start, end)
+
 
 df = c.concat_results('saa')
 
-ds = find_supressions(df, days = days)[4]
+ds = find_supressions(df, days = 4)[0]
+import matplotlib.pyplot as plt
 
-delta = dt.timedelta(days = 7)
+fig, ax = plt.subplots(
+    dpi = 300, sharey = True)
 
-start = ds.index[2]
-end = ds.index[-1]
+b.config_labels()
 
-path = pb.epb_path(
-    start.year, 
-    root = os.getcwd(), 
-    path = 'longs'
-    )
+df = load_base_roti(ds)
 
-df = b.sel_dates(
-    b.load(path), start, end)
-col = '-50'
-df[col].plot(ylim = [0, 4])
+df['-50'].plot(ax = ax)
 
-ds
+df2 = load_base_gamma(ds)
+
+ax1 = ax.twinx()
+
+df2['gamma'].plot(ax = ax1, color = 'b', lw = 2, ylim = [0, 3])
+
+ax.set(ylabel = 'ROTI (TECU/min)')
+ax1.set(ylabel = '$\\gamma_{RT} ~(s^{-1})$')
+
+# ds
