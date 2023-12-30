@@ -50,5 +50,5 @@ def get_days(days = 4, kind = 0):
     return concat_and_sel(lst_days, kind = kind)
 
 
-get_days(kind = 0)
+# get_days(kind = 0)
 
