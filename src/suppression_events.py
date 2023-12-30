@@ -32,7 +32,7 @@ def atypical_occurrences(df, days=4, col='epb', kind=0):
      
     return out
 
-def sel_days(
+def concat_and_sel(
         out, 
         col = 'epb', 
         kind = 0
@@ -40,15 +40,15 @@ def sel_days(
     ds = pd.concat(out)
     return ds.loc[ds[col] == kind]
 
-def suppression_days(days = 4, kind = 0):
+def get_days(days = 4, kind = 0):
 
     df = c.concat_results('saa')
     
     lst_days = atypical_occurrences(
         df, days = days, kind = kind)
     
-    return sel_days(lst_days, kind = kind)#.index
+    return concat_and_sel(lst_days, kind = kind)
 
 
-suppression_days(kind = 0)
+get_days(kind = 0)
 
