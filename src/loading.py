@@ -13,7 +13,7 @@ def concat_longitudes_by_date(
     
     out = []    
         
-    for day in range(days):
+    for day in range(days + 1):
         
         delta = dt.timedelta(days = day)
         dn = start + delta
@@ -79,5 +79,13 @@ def load_raw_roti(start):
 # ds = load_raw_roti(start)
 # ds = load_base_roti(ds)
 
-# ds['-50'].plot()
 
+infile = 'temp/20150329.txt'
+
+# ds = b.load(infile)
+
+# ds['-50'].plot()
+import core as c
+
+
+c.get_days()
