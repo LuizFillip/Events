@@ -74,10 +74,10 @@ def load_raw_roti(start):
     
     return b.load(fname(start))
 
-start = dt.datetime(2013, 4, 3)
+# start = dt.datetime(2013, 4, 3)
 
-ds = load_raw_roti(start)
-ds = load_base_roti(ds)
+# ds = load_raw_roti(start)
+# ds = load_base_roti(ds)
 
-ds['-50'].plot()
+# ds['-50'].plot()
 
