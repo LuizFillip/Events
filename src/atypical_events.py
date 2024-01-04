@@ -49,6 +49,15 @@ def get_days(days = 4, kind = 0):
     
     return concat_and_sel(lst_days, kind = kind).index
 
-
+def range_days(days = 4, kind = 0):
+    
+    df = c.concat_results('saa')
+    
+    lst_days = atypical_occurrences(
+        df, days = days, kind = kind)
+    
+    return 
+        
+    
 # get_days(kind = 0)
 
