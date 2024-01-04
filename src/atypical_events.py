@@ -38,7 +38,7 @@ def concat_and_sel(
         kind = 0
         ):
     ds = pd.concat(out)
-    return ds.loc[ds[col] == kind]
+    return ds.loc[ds[col] == kind].index
 
 def get_days(days = 4, kind = 0):
 
@@ -56,8 +56,10 @@ def range_days(days = 4, kind = 0):
     lst_days = atypical_occurrences(
         df, days = days, kind = kind)
     
-    return 
+    return lst_days
         
+def test_length_events(events, days):
+    assert len(events) == len(days) 
     
-# get_days(kind = 0)
+
 

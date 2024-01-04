@@ -2,37 +2,8 @@ import PlasmaBubbles as pb
 import os 
 import base as b 
 import RayleighTaylor as rt
-import datetime as dt 
 import pandas as pd
-
-def concat_longitudes_by_date(
-        start, 
-        days = 7, 
-        root = 'D:\\'
-        ):
-    
-    out = []    
-        
-    for day in range(days + 1):
-        
-        delta = dt.timedelta(days = day)
-        dn = start + delta
-        
-        path = pb.path_roti(dn, root)
-        
-        out.append(pb.long_dataset2(path))
-        
-    return pd.concat(out)
-
-
-def save_temp(ds, fname):
-    ds.to_csv('temp/' + fname)
-
-def fname(start):
-    
-    b.make_dir('temp/')
-    filename = start.strftime('%Y%m%d.txt')
-    return f'temp/{filename}'
+import core as c 
 
 def load_base_roti(ds):
         
@@ -62,30 +33,44 @@ def load_base_gamma(ds):
     
     return b.sel_dates(ds1, start, end)
 
-
-
-def load_raw_roti(start):
-
-    path = fname(start)
+def concat_longitudes_by_date(
+        days, 
+        root = 'D:\\'
+        ):
     
-    if not os.path.exists(path):
-        ds = concat_longitudes_by_date(start)
-        ds.to_csv(fname(start))
+    out = []    
+        
+    for dn in days.index[1:]:
+        
+        path = pb.path_roti(dn, root)
+        
+        out.append(pb.long_dataset2(path))
+        
+    return pd.concat(out)
     
-    return b.load(fname(start))
 
-# start = dt.datetime(2013, 4, 3)
+def save_temp(ds, path_to_save):
+    ds.to_csv(path_to_save)
 
-# ds = load_raw_roti(start)
-# ds = load_base_roti(ds)
-
-
-infile = 'temp/20150329.txt'
-
-# ds = b.load(infile)
-
-# ds['-50'].plot()
-import core as c
+def fname(dn, folder = 'temp2'):
+    b.make_dir(f'{folder}/')
+    filename = dn.strftime('%Y%m%d.txt')
+    return f'{folder}/{filename}'
 
 
-c.get_days()
+def run_and_save():
+    
+    days = c.range_days(days = 4, kind = 0)
+    events = c.concat_and_sel(days)
+    folder = 'temp2'
+    
+    for day, event in zip(days, events):
+            
+        ds = concat_longitudes_by_date(
+                day, 
+                root = 'D:\\'
+                )
+        
+        save_temp(ds, fname(event, folder = folder))
+
+
