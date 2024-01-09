@@ -43,12 +43,10 @@ def test_difference(df):
     
     return df.index.difference(ds.index)
 
-# df = c.concat_results('saa')
 
-# parts = len(df) // 4
-
-
-
-
-# for name in months.keys():
-#     print(len(seasons(df, name)))
+def main():
+    
+    df = c.concat_results('saa')
+    
+    for name in months.keys():
+        print(len(seasons(df, name)))

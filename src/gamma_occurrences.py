@@ -26,7 +26,9 @@ def occurrences_by_range(df):
         
     return out
 
-
-df = c.concat_results('saa')
-
-
+def plot_histogram():
+    
+    df = c.concat_results('saa')
+    
+    bins = np.arange(0, 4, 0.1)
+    df['gamma'].plot(kind = 'hist', bins = bins)

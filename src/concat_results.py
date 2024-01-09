@@ -38,7 +38,12 @@ def epbs(
     df.columns = pd.to_numeric(df.columns)
     
     
-    
+    if geo:
+        df = pd.concat(
+            [df, geo_index()], 
+            axis = 1
+            ).dropna()
+        
     if class_epb  == 'sunset':
         
         # df = df.replace((2, 3, 4), (0, 0, 0))
@@ -46,11 +51,14 @@ def epbs(
             ( class_epb , 
               'no_epb', 'midnight'), (1, 0, 0)
             )
-    else:
+    elif class_epb == 'midnight':
         df = df.replace(
             ( class_epb ,
               'no_epb', 'sunset'), (1, 0, 0)
             )
+        
+    else:
+        return df
      
     if col is not None:
         df = df.loc[:, [col]]
@@ -61,11 +69,7 @@ def epbs(
             inplace = True
             )
         
-    if geo:
-        df = pd.concat(
-            [df, geo_index()], 
-            axis = 1
-            ).dropna()
+    
         
     return df
     
@@ -141,6 +145,6 @@ def concat_results(
 #         class_epb = 'sunset'
 #         )
 
-# df['gamma'].plot()
+df = b.load(PATH_EPB)
 
-# len(df) // 2
+df

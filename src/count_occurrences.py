@@ -42,58 +42,9 @@ def month_to_month_occurrence(
     return ds
 
 
-def month_occurrence(
-        df, 
-        value = 1.0
-        ):
-
-    cols = df.columns
-    
-    cols = [c for c in cols if 'f' not in c]
-    
-    res = []
-    for month in range(1, 13, 1):
-        
-        out = {}
-        for col in cols:
-            
-            df_mon = df.loc[
-                df.index.month == month, col
-                ]
-            out[col] = (df_mon == value).sum()
-            
-        res.append(
-            pd.DataFrame(
-                out, index = [month]
-                )
-            )
-    return pd.concat(res)
 
 
-def year_occurrence(
-        df, 
-        value = 1.0
-        ):
-    
-    cols = df.columns
-    
-    cols = [c for c in cols if 'f' not in c]
-    
-    res = []
-    for year in range(2013, 2023):
-        out = {}
-        for col in cols:
-            df_yr = df.loc[
-                df.index.year == year, col
-                ]
-            out[col] = (df_yr == value).sum()
-            
-        res.append(
-            pd.DataFrame(
-                out, index = [year]
-                )
-            )
-    return pd.concat(res)
+
 
 
 
@@ -141,3 +92,62 @@ class non_and_occurrences:
             
         return pd.DataFrame(out, index = years)
 
+
+import core as c
+df = c.epbs(class_epb = None)
+
+
+
+def count_all_types(df_sel, month):
+
+    out = []
+
+    for col in df_sel.columns:
+        
+        counts =  df_sel[col].value_counts()
+        # print(counts.to_frame())
+        out.append(counts.to_frame().T)
+        
+    ds = pd.concat(out).T
+    ds['type'] = ds.index
+    ds.index = [month] * len(ds)
+
+    return ds 
+
+
+
+def month_occurrence(
+        df
+        ):
+
+    out = []
+    for month in range(1, 13, 1):
+
+        df_mon = df.loc[df.index.month == month]
+        
+        out.append(count_all_types(df_mon, month))
+        
+        
+    return pd.concat(out)
+
+
+
+def year_occurrence(df):
+    
+    
+    res = []
+    for year in range(2013, 2023):
+        
+        df_yr = df.loc[
+            df.index.year == year
+            ]
+        res.append(count_all_types(df_yr, year))
+            
+      
+    return pd.concat(res)
+
+# ds = year_occurrence(
+#         df
+#         )
+
+# ds.loc[ds['type'] == 'sunset']

@@ -4,6 +4,8 @@ import base as b
 import RayleighTaylor as rt
 import pandas as pd
 import core as c 
+import datetime as dt 
+
 
 def load_base_roti(ds):
         
@@ -47,10 +49,7 @@ def concat_longitudes_by_date(
         out.append(pb.long_dataset2(path))
         
     return pd.concat(out)
-    
-
-def save_temp(ds, path_to_save):
-    ds.to_csv(path_to_save)
+        
 
 def fname(dn, folder = 'temp2'):
     b.make_dir(f'{folder}/')
@@ -58,11 +57,11 @@ def fname(dn, folder = 'temp2'):
     return f'{folder}/{filename}'
 
 
-def run_and_save():
+def run_and_save(folder = 'temp2'):
     
     days = c.range_days(days = 4, kind = 0)
     events = c.concat_and_sel(days)
-    folder = 'temp2'
+    
     
     for day, event in zip(days, events):
             
@@ -71,6 +70,32 @@ def run_and_save():
                 root = 'D:\\'
                 )
         
-        save_temp(ds, fname(event, folder = folder))
+        path_to_save = fname(event, folder = folder)
+        
+        ds.to_csv(path_to_save)
+
+def save_by_date(dn):
+    
+    path = pb.epb_path(
+        dn.year, 
+        root = os.getcwd(), 
+        path = 'longs'
+        )
+    
+    start = dn - dt.timedelta(days = 3)
+    end = dn + dt.timedelta(days = 5)
+    
+    df =  b.sel_dates(b.load(path), start, end)
+    
+    df['-50'].plot()
+    
+    df.to_csv(fname(dn))
+    
 
 
+def main():
+    days = c.range_days(days = 4, kind = 0)
+    events = c.concat_and_sel(days)
+
+    dn = dt.datetime(2015, 10, 7)
+    save_by_date(dn)
