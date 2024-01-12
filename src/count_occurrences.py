@@ -41,13 +41,6 @@ def month_to_month_occurrence(
 
     return ds
 
-
-
-
-
-
-
-
 class non_and_occurrences:
     
     
@@ -55,7 +48,6 @@ class non_and_occurrences:
         
         self.df = df
         
-
     def count(self):
         return
     
@@ -91,11 +83,6 @@ class non_and_occurrences:
             out['no_epb'].append((df_yr == 0).sum())
             
         return pd.DataFrame(out, index = years)
-
-
-import core as c
-df = c.epbs(class_epb = None)
-
 
 
 def count_all_types(df_sel, month):
