@@ -5,30 +5,30 @@ import RayleighTaylor as rt
 import GEO as gg 
 import datetime as dt
 
-PATH_GAMMA = 'database/Results/gamma/'
+
+PATH_GAMMA = 'database/gamma/'
 PATH_EPB = 'database/epbs/events_types.txt'
 PATH_EPB = 'database/epbs/events_class.txt'
+PATH_EPB = 'database/epbs/sunset_events.txt'
+
 PATH_PRE = 'digisonde/data/PRE/'
 PATH_INDEX =  'database/indices/omni_pro.txt'
 
-def gamma(
-        site = 'saa', 
-        col_g = 'night'
-        ):
+def gamma(site = 'saa'):
     
     path = os.path.join(
        PATH_GAMMA,
-       f't_{site}.txt'
+       f'p_{site}.txt'
        )
-
-    df = b.load(path)
-    df = df.loc[~(df['night'] > 0.004)]
-    df = df * 1e3
     
-    return df[col_g]
+    df = b.load(path)
+    df = df.loc[df.index.time == dt.time(22, 0)]    
+    df.index = pd.to_datetime(df.index.date)
+
+    return df
 
 
-def epbs(
+def epbs2(
         col = -50, 
         class_epb = 'sunset',
         geo = False
@@ -68,13 +68,24 @@ def epbs(
                 }, 
             inplace = True
             )
-        
-    
-        
+
     return df
     
 
-
+def epbs(col = -50):
+    
+    df = b.load(PATH_EPB)
+    df.columns = pd.to_numeric(df.columns)
+    
+    df = df.loc[:, [col]]
+    df.rename(
+        columns = {
+            col: 'epb'
+            }, 
+        inplace = True
+        )
+    
+    return df
 
 
 def geo_index(
@@ -108,43 +119,34 @@ def pre(
         )    
     return b.load(path)
 
-def concat_results(
-        site = 'saa', 
-        class_epb = 'sunset'
-        ):
+def concat_results(site = 'saa'):
     
     if site == 'saa':
-        col_e = -50
+        col_epb = -50
     else:
-        col_e = -80
+        col_epb = -80
     
-    g = rt.load_grt(site)
-
-    g = g[['gravity', 'gamma']] * 1e3
-    e = epbs(col_e, class_epb)
-    p = pre(site)
     i = geo_index()
-    
+    g = gamma(site)[['gravity', 'vp', 'gamma']]
+    e = epbs(col = col_epb)
+
+
     ds = pd.concat(
-        [g, i, e, p], 
-        axis = 1
-        ).dropna()
-    
-    ds.columns.name = gg.sites[site]['name']
-    
+        [g, i, e], 
+        axis = 1).dropna().sort_index()
+
+    ds[['gravity', 'gamma']] = ds[
+        ['gravity', 'gamma']] * 1e3
+
     ds['doy'] = ds.index.day_of_year.copy()
 
-    ds = ds.loc[~((ds['gamma'] > 4) |
-                  (ds['vp'] < 0))]
     return ds
 
 
 
-# df = concat_results(
-#         site = 'saa', 
-#         class_epb = 'sunset'
-#         )
-
-df = b.load(PATH_EPB)
+site = 'saa'
 
 
+df = concat_results()
+
+df

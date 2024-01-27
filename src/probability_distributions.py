@@ -57,7 +57,7 @@ def probability_distribution(df, col = 'gamma'):
         except:
             
             if (epbs == 0) and (end > 50):
-                rate = 1
+                rate = 0
                 epb_error = 0
                 
             elif (epbs == 0) and (days == 0):

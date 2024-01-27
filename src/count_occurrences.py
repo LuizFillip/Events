@@ -92,11 +92,11 @@ def count_all_types(df_sel, month):
     for col in df_sel.columns:
         
         counts =  df_sel[col].value_counts()
-        # print(counts.to_frame())
+        
         out.append(counts.to_frame().T)
         
     ds = pd.concat(out).T
-    ds['type'] = ds.index
+
     ds.index = [month] * len(ds)
 
     return ds 
