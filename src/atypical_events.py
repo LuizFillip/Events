@@ -1,7 +1,7 @@
 import pandas as pd
 import core as c
 import numpy as np
-
+import datetime as dt 
 
 
 def remove_middle(arr):
@@ -40,14 +40,13 @@ def concat_and_sel(
     ds = pd.concat(out)
     return ds.loc[ds[col] == kind].index
 
-def get_days(days = 4, kind = 0):
+def get_days(df , days = 4, kind = 0):
 
-    df = c.concat_results('saa')
     
     lst_days = atypical_occurrences(
         df, days = days, kind = kind)
     
-    return concat_and_sel(lst_days, kind = kind).index
+    return concat_and_sel(lst_days, kind = kind) 
 
 def range_days(days = 4, kind = 0):
     
@@ -61,5 +60,18 @@ def range_days(days = 4, kind = 0):
 def test_length_events(events, days):
     assert len(events) == len(days) 
     
+df = c.epbs()
 
 
+lst_days = atypical_occurrences(
+    df, days = 3, kind = 1)
+
+def input_window():
+    
+    dn = dt.datetime(2013, 3, 17)
+    delta = dt.timedelta(days = 4)
+    return df.loc[(df.index >= dn - delta) & 
+                  (df.index <= dn + delta)]
+
+
+# (len(lst_days) + 1) / len(df) * 100

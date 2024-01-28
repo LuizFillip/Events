@@ -49,12 +49,12 @@ def geomanetic_by_solar(
 
     ds.loc['total', :] = ds.sum(axis=0)
     
-    ds.columns.name = limit
+    ds.columns.name = level
     
     return ds
 
 df = c.concat_results('saa')
-
+# df = c.epbs(geo = True)
 limit = c.limits_on_parts(df['f107a'], parts = 2)
 
 geomanetic_by_solar(
@@ -63,5 +63,5 @@ geomanetic_by_solar(
         level = limit
         )
 
-# df['gamma'].plot()
+
 

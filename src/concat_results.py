@@ -1,8 +1,6 @@
 import base as b 
 import pandas as pd
 import os 
-import RayleighTaylor as rt 
-import GEO as gg 
 import datetime as dt
 
 
@@ -72,7 +70,7 @@ def epbs2(
     return df
     
 
-def epbs(col = -50):
+def epbs(col = -50, geo = False):
     
     df = b.load(PATH_EPB)
     df.columns = pd.to_numeric(df.columns)
@@ -84,7 +82,10 @@ def epbs(col = -50):
             }, 
         inplace = True
         )
-    
+    if geo:
+        df = pd.concat([df, geo_index()], 
+            axis = 1
+            ).dropna()
     return df
 
 
@@ -144,9 +145,9 @@ def concat_results(site = 'saa'):
 
 
 
-site = 'saa'
+# site = 'saa'
 
 
-df = concat_results()
+# df = concat_results()
 
-df
+# df
