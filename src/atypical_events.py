@@ -60,13 +60,13 @@ def range_days(days = 4, kind = 0):
 def test_length_events(events, days):
     assert len(events) == len(days) 
     
-df = c.epbs()
+# df = c.epbs()
 
 
-lst_days = atypical_occurrences(
-    df, days = 3, kind = 1)
+# lst_days = atypical_occurrences(
+#     df, days = 3, kind = 1)
 
-def input_window():
+def input_window(df):
     
     dn = dt.datetime(2013, 3, 17)
     delta = dt.timedelta(days = 4)
