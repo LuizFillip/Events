@@ -5,7 +5,6 @@ import datetime as dt
 
 
 PATH_GAMMA = 'database/gamma/'
-PATH_EPB = 'database/epbs/events_types.txt'
 PATH_EPB = 'database/epbs/events_class.txt'
 PATH_EPB = 'database/epbs/sunset_events.txt'
 
