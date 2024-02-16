@@ -57,9 +57,9 @@ df = c.concat_results('saa')
 # df = c.epbs(geo = True)
 limit = c.limits_on_parts(df['f107a'], parts = 2)
 
-geomanetic_by_solar(
+ds = geomanetic_by_solar(
         df, 
-        percent_like = True,
+        percent_like = False,
         level = limit
         )
 
