@@ -1,52 +1,77 @@
 import datetime as dt 
 import core as c 
-import pandas as pd
 
 
-months = {
-      'March equinox': 3,
-      'June solstice': 6,
-      'September equinox': 9,
-      'December solstice': 12
-      }
-
-def dn2doy(dn):
-    return dn.timetuple().tm_yday
-
-def seasons(df, name):
+class SeasonsSplit(object):
     
-    month = months[name]
+    def __init__(
+            self, 
+            df, 
+            month, 
+            translate = False
+            ):
         
-    dn = dt.date(2013, month, 21)
+        month = month.lower()
+        
+        if month == 'march':
+            dn = dt.date(2013, 3, 21)
+            
+            if translate:
+                name = 'Equinócio de Março'
+            else:
+                name = 'March equinox'
+        
+        elif month == 'june':
+            dn = dt.date(2013, 6, 21)
+            
+            if translate:
+                name = 'Solstício de Junho'
+            else:
+                name = 'June solstice'
+            
+        elif month == 'september':
+            dn = dt.date(2013, 9, 21)
+            
+            if translate:
+                name = 'Equinócio de Setembro'
+            else:
+                name = 'September equinox'
+            
+        else:
+            df['doy'] = df['doy'].where(
+                df['doy'] >= 36, 
+                df['doy'] + 365
+                )
+            dn = dt.date(2013, 12, 21)
+            
+            if translate:
+                name = 'Solstício de Dezembro'
+            else:
+                name = 'December solstice'
+       
+        self.df = df
+        self.dn = dn
+        self.name = name
     
-    if month == 12:
+    @staticmethod
+    def dn2doy(dn):
+        return dn.timetuple().tm_yday
     
-        df['doy'] = df['doy'].where(
-            df['doy'] >= 36, 
-            df['doy'] + 365
+    @property
+    def sel_season(self):
+        
+        cond = (
+        (self.df['doy'] > self.dn2doy(self.dn) - 46) &
+        (self.df['doy'] <= self.dn2doy(self.dn) + 46)
             )
-
-    cond = (
-        (df['doy'] > dn2doy(dn) - 46) &
-        (df['doy'] <= dn2doy(dn) + 46)
-        )
-    
-    return df.loc[cond]
-
-def test_difference(df):
-    
-    out = []
-    for name in months.keys():
-        out.append(seasons(df, name))
-
-    ds = pd.concat(out)
-    
-    return df.index.difference(ds.index)
+        
+        return self.df.loc[cond]
 
 
 def main():
     
     df = c.concat_results('saa')
     
-    for name in months.keys():
-        print(len(seasons(df, name)))
+    ss = SeasonsSplit(df, 'june', translate = True)
+    
+    print(ss.sel_season, ss.name)
