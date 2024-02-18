@@ -53,15 +53,15 @@ def geomanetic_by_solar(
     
     return ds
 
-df = c.concat_results('saa')
-# df = c.epbs(geo = True)
-limit = c.limits_on_parts(df['f107a'], parts = 2)
+# df = c.concat_results('saa')
+# # df = c.epbs(geo = True)
+# limit = c.limits_on_parts(df['f107a'], parts = 2)
 
-ds = geomanetic_by_solar(
-        df, 
-        percent_like = False,
-        level = limit
-        )
+# ds = geomanetic_by_solar(
+#         df, 
+#         percent_like = False,
+#         level = limit
+#         )
 
 
 

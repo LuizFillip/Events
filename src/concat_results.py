@@ -6,7 +6,7 @@ import datetime as dt
 
 PATH_GAMMA = 'database/gamma/'
 PATH_EPB = 'database/epbs/events_class.txt'
-PATH_EPB = 'database/epbs/sunset_events.txt'
+PATH_EPB = 'database/epbs/sunset_events2.txt'
 
 PATH_PRE = 'digisonde/data/PRE/'
 PATH_INDEX =  'database/indices/omni_pro.txt'
@@ -19,9 +19,16 @@ def gamma(site = 'saa'):
        )
     
     df = b.load(path)
-    df = df.loc[df.index.time == dt.time(22, 0)]    
+    
+    if site == 'saa':
+        time = dt.time(22, 0)
+    else:
+        time = dt.time(0, 0)
+    
+    df = df.loc[df.index.time == time]    
     df.index = pd.to_datetime(df.index.date)
-
+    
+    df= df.loc[~df.index.duplicated()]
     return df
 
 
@@ -143,10 +150,6 @@ def concat_results(site = 'saa'):
     return ds
 
 
+site = 'jic'
+# df =  gamma(site)[['gravity', 'vp', 'gamma']]
 
-# site = 'saa'
-
-
-# df = concat_results()
-
-# df
