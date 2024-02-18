@@ -1,66 +1,73 @@
-def solar_levels(
-        df, 
-        level = (100),
-        flux_col = 'f107a'
-        ):
+class DisturbedLevels:
     
-    if isinstance(level, (int, float)):
-        level = [level]
     
-    if len(level) == 1:
+    def __init__(self, df):
         
-        lower = df.loc[
-            df[flux_col] <= level[0]
-            ]
+        self.df = df
         
-        high = df.loc[
-            df[flux_col] > level[0]
-            ]
         
-        return [lower, high]
+    def F107(self, level = 100):
+        
+        if isinstance(level, (int, float)):
+            level = [level]
+            
+        if level is None:
+            return [self.df]
+        
+        if len(level) == 1:
+            
+            lower = self.df.loc[
+                self.df['f107a'] <= level[0]
+                ]
+            
+            high = self.df.loc[
+                self.df['f107a'] > level[0]
+                ]
+            
+            return [lower, high]
+        
+        else:
+            
+            lower = self.df.loc[
+                self.df['f107a'] <= level[0]
+                ]
+            
+            medium = self.df.loc[
+                (self.df['f107a'] > level[0]) &
+                (self.df['f107a'] < level[1])
+                ]
+            
+            high = self.df.loc[
+                self.df['f107a'] >= level[1]
+                ]
+            
+            return [lower, medium, high]
+        
+    def Kp(self, level = 3):
+        
+        quiet = self.df[self.df['kp'] <= level]
+        
+        disturbed = self.df[self.df['kp'] > level]
+        
+        return [quiet, disturbed]
     
-    else:
+    def Dst(self):
         
-        lower = df.loc[
-            df[flux_col] <= level[0]
+        week = self.df[(self.df['dst'] > -50)]
+        intense = self.df[(self.df['dst'] < -100)]
+        
+        moderate = self.df[
+            (self.df['dst'] < -50) & 
+            (self.df['dst'] > -100)
             ]
         
-        medium = df.loc[
-            (df[flux_col] > level[0]) &
-            (df[flux_col] < level[1])
-            ]
-        
-        high = df.loc[
-            df[flux_col] >= level[1]
-            ]
-        
-        return [lower, medium, high]
-        
+        return [week, moderate, intense]
 
-def dst_levels(df):
-    
-    week = df[(df['dst'] > -50)]
-    
-    moderate = df[(df['dst'] < -50) & 
-                  (df['dst'] > -100)]
-    
-    intense = df[(df['dst'] < -100)]
-    
-    return [week, moderate, intense]
 
-def kp_levels(
-        df, 
-        level = 3, 
-        kp_col = 'kp'
-        ):
     
-    
-    quiet = df[
-        df[kp_col] <= level
-        ]
-    
-    disturbed = df[
-        df[kp_col] > level
-        ]
-    
-    return [quiet, disturbed]
+    @staticmethod
+    def solar_labels(level):
+        return [
+        '$F_{10.7} \\leq $' + f' {level}',
+        '$F_{10.7} > $' + f' {level}'
+        ]        
