@@ -4,10 +4,11 @@ import core as c
 
 def limits(col):
     if col == 'gamma':
-        vmin, vmax, step = 0, 3.8, 0.2
-        # vmin, vmax, step = 0, 2, 0.1
+        # vmin, vmax, step = 0, 3.8, 0.2
+        vmin, vmax, step = 0, 2, 0.1
     elif col == 'vp':
-        vmin, vmax, step = 0, 80, 5
+        #vmin, vmax, step = 0, 80, 5
+        vmin, vmax, step = 0, 50, 5
     else:
         vmin, vmax, step = 0, 0.8, 0.05
         
