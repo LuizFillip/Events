@@ -23,7 +23,7 @@ def gamma(site = 'saa'):
     if site == 'saa':
         time = dt.time(22, 0)
     else:
-        time = dt.time(0, 0)
+        time = dt.time(1, 0)
     
     df = df.loc[df.index.time == time]    
     df.index = pd.to_datetime(df.index.date)
@@ -96,7 +96,8 @@ def epbs(col = -50, geo = False):
 
 
 def geo_index(
-        cols = ['f107a', 'f107', 'kp', 'dst'],
+        cols = ['f107a', 'f107', 
+                'kp', 'dst'],
         syear = 2013, 
         eyear = 2022
         ):
@@ -150,6 +151,25 @@ def concat_results(site = 'saa'):
     return ds
 
 
-site = 'jic'
-# df =  gamma(site)[['gravity', 'vp', 'gamma']]
+# site = 'jic'
+# # df =  gamma(site)[['gravity', 'vp', 'gamma']]
+
+import RayleighTaylor as rt
+
+year = 2015
+
+
+def local_results(year):
+    infile = f'models/temp/local_{year}'
+    
+    df = rt.local_gamma(infile)
+    
+    df =  rt.sel_times(df, year)
+    
+    df =  rt.pre_effects(df)
+    
+    ep = epbs(col = -80, geo = False)
+    
+    return pd.concat([df, ep], axis  = 1).dropna()
+    
 
