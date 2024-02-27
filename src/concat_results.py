@@ -2,6 +2,7 @@ import base as b
 import pandas as pd
 import os 
 import datetime as dt
+import RayleighTaylor as rt
 
 
 PATH_GAMMA = 'database/gamma/'
@@ -82,12 +83,14 @@ def epbs(col = -50, geo = False):
     df.columns = pd.to_numeric(df.columns)
     
     df = df.loc[:, [col]]
+    
     df.rename(
         columns = {
             col: 'epb'
             }, 
         inplace = True
         )
+    
     if geo:
         df = pd.concat([df, geo_index()], 
             axis = 1
@@ -129,13 +132,17 @@ def pre(
 
 def concat_results(site = 'saa'):
     
+    i = geo_index()
+    g = gamma(site)[['gravity', 'vp', 'gamma']]
+    
     if site == 'saa':
         col_epb = -50
     else:
         col_epb = -80
     
-    i = geo_index()
-    g = gamma(site)[['gravity', 'vp', 'gamma']]
+    g = g.loc[~(g['vp'] > 100)]
+    
+    
     e = epbs(col = col_epb)
 
 
@@ -151,25 +158,20 @@ def concat_results(site = 'saa'):
     return ds
 
 
-# site = 'jic'
-# # df =  gamma(site)[['gravity', 'vp', 'gamma']]
 
-import RayleighTaylor as rt
-
-year = 2015
-
-
-def local_results(year):
-    infile = f'models/temp/local_{year}'
+def local_results(year, col_grad = 'L', col_epb = -80):
     
-    df = rt.local_gamma(infile)
-    
-    df =  rt.sel_times(df, year)
-    
-    df =  rt.pre_effects(df)
-    
-    ep = epbs(col = -80, geo = False)
+    df = rt.local_results(
+        year, 
+        col_grad = col_grad, 
+        time = dt.time(1, 0)
+        )
+            
+    ep = epbs(col = col_epb, geo = True)
     
     return pd.concat([df, ep], axis  = 1).dropna()
     
+
+# site, year = 'jic', 2015
+# # # df =  gamma(site)[['gravity', 'vp', 'gamma']]
 

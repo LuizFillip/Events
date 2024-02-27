@@ -130,3 +130,11 @@ class CountAllOccurences:
         return pd.concat(res)
 
 
+# import core as c 
+
+# ds = c.epbs(col = -80, geo = False)
+
+# ds = ds.loc[ds.index.year == 2018]
+# ds = CountAllOccurences(ds)
+
+# ds.month.plot(kind = 'bar')

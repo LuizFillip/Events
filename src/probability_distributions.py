@@ -3,9 +3,9 @@ import numpy as np
 import core as c
 
 def limits(col):
-    if col == 'gamma':
+    if 'gamma' in col:
         # vmin, vmax, step = 0, 3.8, 0.2
-        vmin, vmax, step = 0, 2, 0.1
+        vmin, vmax, step = 0, 3.2, 0.2
     elif col == 'vp':
         #vmin, vmax, step = 0, 80, 5
         vmin, vmax, step = 0, 50, 5
@@ -87,18 +87,15 @@ def splited_dataset(df, col):
     vmin, vmax, step = limits(col)
     
     bins = np.arange(vmin, vmax + step, step)
-    
-    
+
     out = []
     
     for i in range(len(bins) - 1):
         
         start, end = bins[i], bins[i + 1]
         
-        out.append( df.loc[
-            (df[col] > start) & 
-            (df[col] <= end)
-            ]
+        out.append( 
+            df.loc[(df[col] > start) & (df[col] <= end)]
         )
         
     return pd.concat(out).sort_index()
@@ -114,7 +111,6 @@ def test_difference(df):
     
 def main():
     df = c.concat_results('saa')
-
 
     col = 'gamma'
 
