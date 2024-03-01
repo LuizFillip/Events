@@ -7,7 +7,7 @@ import RayleighTaylor as rt
 
 PATH_GAMMA = 'database/gamma/'
 PATH_EPB = 'database/epbs/events_class.txt'
-PATH_EPB = 'database/epbs/sunset_events2.txt'
+PATH_EPB = 'database/epbs/sunset_events3.txt'
 
 PATH_PRE = 'digisonde/data/PRE/'
 PATH_INDEX =  'database/indices/omni_pro.txt'
@@ -99,17 +99,14 @@ def epbs(col = -50, geo = False):
 
 
 def geo_index(
-        cols = ['f107a', 'f107', 
-                'kp', 'dst'],
+        cols = ['f107a', 'f107', 'kp', 'dst'],
         syear = 2013, 
         eyear = 2022
         ):
     
     ds = b.load(PATH_INDEX)
     
-    ds["f107a"] = ds["f107"].rolling(
-        window = 81
-        ).mean()
+    ds["f107a"] = ds["f107"].rolling(window = 81).mean()
     
     start = dt.datetime(syear, 1, 1)
     end = dt.datetime(eyear, 12, 31)
@@ -159,11 +156,14 @@ def concat_results(site = 'saa'):
 
 
 
-def local_results(year, col_grad = 'L', col_epb = -80):
+def local_results(
+        year, 
+        col_grad = 'L1', 
+        col_epb = -80):
     
     df = rt.local_results(
         year, 
-        col_grad = col_grad, 
+        col_grad = 'L1', 
         time = dt.time(1, 0)
         )
             
@@ -174,4 +174,8 @@ def local_results(year, col_grad = 'L', col_epb = -80):
 
 # site, year = 'jic', 2015
 # # # df =  gamma(site)[['gravity', 'vp', 'gamma']]
+
+# df = concat_results(site = 'jic')
+# df = df.loc[df.index.year == 2019]
+# df['gamma'].plot()
 
