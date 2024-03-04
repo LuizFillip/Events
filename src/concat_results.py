@@ -143,9 +143,7 @@ def concat_results(site = 'saa'):
     e = epbs(col = col_epb)
 
 
-    ds = pd.concat(
-        [g, i, e], 
-        axis = 1).dropna().sort_index()
+    ds = pd.concat([g, i, e], axis = 1).dropna().sort_index()
 
     ds[['gravity', 'gamma']] = ds[
         ['gravity', 'gamma']] * 1e3
@@ -175,7 +173,14 @@ def local_results(
 # site, year = 'jic', 2015
 # # # df =  gamma(site)[['gravity', 'vp', 'gamma']]
 
-# df = concat_results(site = 'jic')
+df = concat_results(site = 'jic')
 # df = df.loc[df.index.year == 2019]
 # df['gamma'].plot()
 
+# path = 'database/jic_local'
+# df = b.load(path)
+
+# df['ge'].plot()
+
+
+# df.columns 
