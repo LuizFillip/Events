@@ -14,24 +14,29 @@ PATH_INDEX =  'database/indices/omni_pro.txt'
 
 def gamma(site = 'saa'):
     
-    path = os.path.join(
-       PATH_GAMMA,
-       f'p_{site}.txt'
-       )
     
-    df = b.load(path)
     
     if site == 'saa':
+        path = os.path.join(
+           PATH_GAMMA,
+           f'p_{site}.txt'
+           )
+        
+        df = b.load(path)
         time = dt.time(22, 0)
-    else:
-        time = dt.time(1, 0)
-    
-    df = df.loc[df.index.time == time]    
-    df.index = pd.to_datetime(df.index.date)
-    
-    df= df.loc[~df.index.duplicated()]
-    return df
+        df = df.loc[df.index.time == time]    
+        df.index = pd.to_datetime(df.index.date)
+        
+        df= df.loc[~df.index.duplicated()]
+        df['gamma'] = df['gamma'] * 1e3
+        return df
 
+    else:
+        df = b.load('database/jic_local')
+        time = dt.time(1, 0)
+        return df
+    
+   
 
 def epbs2(
         col = -50, 
@@ -130,7 +135,7 @@ def pre(
 def concat_results(site = 'saa'):
     
     i = geo_index()
-    g = gamma(site)[['gravity', 'vp', 'gamma']]
+    g = gamma(site)[['vp', 'gamma']]
     
     if site == 'saa':
         col_epb = -50
@@ -145,13 +150,41 @@ def concat_results(site = 'saa'):
 
     ds = pd.concat([g, i, e], axis = 1).dropna().sort_index()
 
-    ds[['gravity', 'gamma']] = ds[
-        ['gravity', 'gamma']] * 1e3
+    
 
     ds['doy'] = ds.index.day_of_year.copy()
 
     return ds
 
+def sel_rename(site, cols = ['gamma', 'epb']):
+    ds = concat_results(site)[cols]
+    for col in ds.columns:
+        ds.rename(columns = {col: f'{col}_{site}'}, inplace = True)
+        
+    return ds 
+
+
+def concat_sites():
+    df = pd.concat(
+        [sel_rename('saa'), 
+        sel_rename('jic'), 
+        geo_index()], axis = 1)
+
+
+    return df.dropna()
+
+
+def sep_data(df, site):
+    
+    cols = [f'gamma_{site}', f'epb_{site}']
+    ds = df[cols]
+    
+    for col in cols:
+        ds.rename(
+            columns = {col: col.replace(f'_{site}', '')}, 
+            inplace = True)
+        
+    return ds 
 
 
 def local_results(
@@ -170,17 +203,9 @@ def local_results(
     return pd.concat([df, ep], axis  = 1).dropna()
     
 
-# site, year = 'jic', 2015
-# # # df =  gamma(site)[['gravity', 'vp', 'gamma']]
 
-df = concat_results(site = 'jic')
-# df = df.loc[df.index.year == 2019]
-# df['gamma'].plot()
+def get_same_length():
+    ds1 = concat_results('saa')
+    ds = concat_results('jic')
 
-# path = 'database/jic_local'
-# df = b.load(path)
-
-# df['ge'].plot()
-
-
-# df.columns 
+    return ds1.loc[ds1.index.isin(ds.index)].dropna(), ds.dropna()
