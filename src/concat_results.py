@@ -9,7 +9,7 @@ PATH_GAMMA = 'database/gamma/'
 PATH_EPB = 'database/epbs/sunset_events2'
 
 PATH_PRE = 'digisonde/data/PRE/'
-PATH_INDEX =  'database/indices/omni_pro.txt'
+PATH_INDEX =  'database/indices/omni.txt'
 
 def gamma(site = 'saa'):
     
