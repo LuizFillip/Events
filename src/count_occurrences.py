@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np 
 
 
-def month_to_month_occurrence(
+def seasonal_yearly_occurrence(
         df, 
         col = '-50'
         ):
@@ -13,9 +13,7 @@ def month_to_month_occurrence(
     occurrence by month
     """
      
-    epb = df.loc[
-        df[col] == 1, [col]
-        ].copy()
+    epb = df.loc[df[col] == 1, [col]].copy()
 
     count_epb = epb.groupby(
         epb.index.to_period('M')
@@ -85,12 +83,15 @@ class non_and_occurrences:
         return pd.DataFrame(out, index = years)
 
 
-class CountAllOccurences:
+class count_occurences:
     
     
     def __init__(self, df):
-        
+        self.s_year = df.index[0].year        
+        self.e_year = df.index[-1].year
+    
         self.df = df
+        
     
     
     @staticmethod
@@ -122,7 +123,7 @@ class CountAllOccurences:
     def year(self):
         
         res = []
-        for year in range(2013, 2023):
+        for year in range(self.s_year, self.e_year + 1):
             
             df_yr = self.df.loc[self.df.index.year == year]
             res.append(self.count_all_types(df_yr, year))
@@ -135,6 +136,3 @@ class CountAllOccurences:
 # ds = c.epbs(col = -80, geo = False)
 
 # ds = ds.loc[ds.index.year == 2018]
-# ds = CountAllOccurences(ds)
-
-# ds.month.plot(kind = 'bar')

@@ -6,8 +6,7 @@ import RayleighTaylor as rt
 
 
 PATH_GAMMA = 'database/gamma/'
-PATH_EPB = 'database/epbs/events_class.txt'
-PATH_EPB = 'database/epbs/sunset_events3.txt'
+PATH_EPB = 'database/epbs/sunset_events2'
 
 PATH_PRE = 'digisonde/data/PRE/'
 PATH_INDEX =  'database/indices/omni_pro.txt'
@@ -28,7 +27,7 @@ def gamma(site = 'saa'):
         df.index = pd.to_datetime(df.index.date)
         
         df= df.loc[~df.index.duplicated()]
-        df['gamma'] = df['gamma'] * 1e3
+        df[['gravity','gamma']] = df[['gravity','gamma']] * 1e3
         return df
 
     else:
@@ -132,10 +131,13 @@ def pre(
         )    
     return b.load(path)
 
-def concat_results(site = 'saa'):
+def concat_results(
+        site = 'saa', 
+        gamma_cols = ['vp', 'gravity', 'gamma']
+        ):
     
     i = geo_index()
-    g = gamma(site)[['vp', 'gamma']]
+    g = gamma(site)[gamma_cols]
     
     if site == 'saa':
         col_epb = -50
@@ -143,14 +145,10 @@ def concat_results(site = 'saa'):
         col_epb = -80
     
     g = g.loc[~(g['vp'] > 100)]
-    
-    
+        
     e = epbs(col = col_epb)
 
-
     ds = pd.concat([g, i, e], axis = 1).dropna().sort_index()
-
-    
 
     ds['doy'] = ds.index.day_of_year.copy()
 
@@ -206,6 +204,14 @@ def local_results(
 
 def get_same_length():
     ds1 = concat_results('saa')
-    ds = concat_results('jic')
+    ds2 = concat_results('jic')
 
-    return ds1.loc[ds1.index.isin(ds.index)].dropna(), ds.dropna()
+    return ds1.loc[ds1.index.isin(ds2.index)].dropna(), ds2.dropna()
+
+
+# ds = concat_results('saa')
+
+# import matplotlib.pyplot  as plt
+
+# plt.scatter(ds['gamma'], ds['vp'])
+
