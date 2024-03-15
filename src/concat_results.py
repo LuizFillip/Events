@@ -7,13 +7,11 @@ import RayleighTaylor as rt
 
 PATH_GAMMA = 'database/gamma/'
 PATH_EPB = 'database/epbs/sunset_events2'
-
+PATH_EPB = 'database/epbs/sunset_fresh'
 PATH_PRE = 'digisonde/data/PRE/'
-PATH_INDEX =  'database/indices/omni.txt'
+PATH_INDEX =  'database/indices/omni_pro2.txt'
 
 def gamma(site = 'saa'):
-    
-    
     
     if site == 'saa':
         path = os.path.join(
@@ -37,51 +35,9 @@ def gamma(site = 'saa'):
     
    
 
-def epbs2(
-        col = -50, 
-        class_epb = 'sunset',
-        geo = False
-        ):
-
-    df = b.load(PATH_EPB)
-    df.columns = pd.to_numeric(df.columns)
-    
-    
-    if geo:
-        df = pd.concat(
-            [df, geo_index()], 
-            axis = 1
-            ).dropna()
-        
-    if class_epb  == 'sunset':
-        
-        # df = df.replace((2, 3, 4), (0, 0, 0))
-        df = df.replace(
-            ( class_epb , 
-              'no_epb', 'midnight'), (1, 0, 0)
-            )
-    elif class_epb == 'midnight':
-        df = df.replace(
-            ( class_epb ,
-              'no_epb', 'sunset'), (1, 0, 0)
-            )
-        
-    else:
-        return df
-     
-    if col is not None:
-        df = df.loc[:, [col]]
-        df.rename(
-            columns = {
-                col: 'epb'
-                }, 
-            inplace = True
-            )
-
-    return df
-    
-
-def epbs(col = -50, geo = False):
+def epbs(col = -50, geo = False, 
+         syear = 2013, 
+         eyear = 2022):
     
     df = b.load(PATH_EPB)
     df.columns = pd.to_numeric(df.columns)
@@ -94,11 +50,11 @@ def epbs(col = -50, geo = False):
             }, 
         inplace = True
         )
+    idx = geo_index(syear = syear, eyear = eyear)
     
     if geo:
-        df = pd.concat([df, geo_index()], 
-            axis = 1
-            ).dropna()
+        df = pd.concat([df, idx], axis = 1).dropna()
+        
     return df
 
 
@@ -209,9 +165,7 @@ def get_same_length():
     return ds1.loc[ds1.index.isin(ds2.index)].dropna(), ds2.dropna()
 
 
-# ds = concat_results('saa')
+ds = concat_results('saa')
 
-# import matplotlib.pyplot  as plt
 
-# plt.scatter(ds['gamma'], ds['vp'])
-
+ds
