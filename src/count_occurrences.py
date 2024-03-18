@@ -33,11 +33,11 @@ def seasonal_yearly_occurrence(
             new_index, 
             freq = "M"
             )
-        )
+        ).replace(float('nan'), 0)
     
     ds.index = ds.index.to_timestamp()
 
-    return ds
+    return ds.astype(int)
 
 class non_and_occurrences:
     

@@ -5,9 +5,9 @@ import core as c
 def limits(col):
     if 'gamma' in col:
         # vmin, vmax, step = 0, 3.8, 0.2
-        vmin, vmax, step = 0, 3.2, 0.2
+        vmin, vmax, step = 0, 2.8, 0.2
     elif col == 'vp':
-        vmin, vmax, step = 0, 80, 5
+        vmin, vmax, step = 0, 70, 5
         # vmin, vmax, step = 0, 50, 5
     else:
         vmin, vmax, step = 0, 0.8, 0.05

@@ -120,9 +120,8 @@ def sel_rename(site, cols = ['gamma', 'epb']):
 
 def concat_sites():
     df = pd.concat(
-        [sel_rename('saa'), 
-        sel_rename('jic'), 
-        geo_index()], axis = 1)
+        [sel_rename('saa'), sel_rename('jic'), geo_index()], 
+        axis = 1)
 
 
     return df.dropna()
@@ -165,7 +164,7 @@ def get_same_length():
     return ds1.loc[ds1.index.isin(ds2.index)].dropna(), ds2.dropna()
 
 
-ds = concat_results('saa')
+# ds = concat_results('saa')
 
 
-ds
+# ds
