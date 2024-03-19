@@ -3,7 +3,7 @@ import pandas as pd
 import os 
 import datetime as dt
 import RayleighTaylor as rt
-
+import PlasmaBubbles as pb 
 
 PATH_GAMMA = 'database/gamma/'
 PATH_EPB = 'database/epbs/sunset_events2'
@@ -35,19 +35,22 @@ def gamma(site = 'saa'):
     
    
 
-def epbs(col = -50, geo = False, 
+def epbs(col = -50, 
+         geo = False, 
          syear = 2013, 
-         eyear = 2022):
+         eyear = 2022
+         ):
     
-    df = b.load(PATH_EPB)
+    df = b.load('core/data/epb_class')
+
+    df = pb.bubble_class(df, typing = 'sunset') 
+
     df.columns = pd.to_numeric(df.columns)
     
     df = df.loc[:, [col]]
     
     df.rename(
-        columns = {
-            col: 'epb'
-            }, 
+        columns = {col: 'epb'}, 
         inplace = True
         )
     idx = geo_index(syear = syear, eyear = eyear)
@@ -165,6 +168,3 @@ def get_same_length():
 
 
 # ds = concat_results('saa')
-
-
-# ds
