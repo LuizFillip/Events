@@ -1,6 +1,4 @@
-import base as b 
 import core as c
-import pandas as pd 
 from sklearn.metrics import confusion_matrix, accuracy_score
 
 
@@ -33,8 +31,18 @@ def metrics(y, y_pred):
     
     acc_score = accuracy_score(y, y_pred)
     
+    return cm, acc_score
+
+year_threshold = 2023
+
+
 df = c.load_results('saa')
 
-train_data = df.loc[df.index.year < 2023]
+train_data = df.loc[df.index.year < year_threshold]
 
-test_data = df.loc[df.index.year == 2023]
+test_data = df.loc[df.index.year == year_threshold]
+
+
+epb, epb_pred = predict_values(train_data, test_data)
+
+metrics(epb, epb_pred)
