@@ -14,10 +14,7 @@ PATH_INDEX =  'database/indices/omni_pro2.txt'
 def gamma(site = 'saa'):
     
     if site == 'saa':
-        path = os.path.join(
-           PATH_GAMMA,
-           f'p_{site}.txt'
-           )
+        path = os.path.join(PATH_GAMMA, f'p_{site}.txt')
         
         df = b.load(path)
         time = dt.time(22, 0)
@@ -38,7 +35,7 @@ def gamma(site = 'saa'):
 def epbs(col = -50, 
          geo = False, 
          syear = 2013, 
-         eyear = 2022
+         eyear = 2023
          ):
     
     df = b.load('core/data/epb_class')
@@ -64,7 +61,7 @@ def epbs(col = -50,
 def geo_index(
         cols = ['f107a', 'f107', 'kp', 'dst'],
         syear = 2013, 
-        eyear = 2022
+        eyear = 2023
         ):
     
     ds = b.load(PATH_INDEX)
@@ -90,13 +87,21 @@ def pre(
         )    
     return b.load(path)
 
-def concat_results(
+def load_results(
         site = 'saa', 
-        gamma_cols = ['vp', 'gravity', 'gamma']
+        gamma_cols = ['vp', 'gamma'],
+        syear = 2013, 
+        eyear = 2023
         ):
     
-    i = geo_index()
-    g = gamma(site)[gamma_cols]
+    i = geo_index(
+        cols = ['f107a', 'f107', 'kp', 'dst'],
+        syear = syear, 
+        eyear = eyear
+        )
+    
+    g = b.load('gamma_saa')[gamma_cols]
+    g['gamma'] = g['gamma'] * 1e3
     
     if site == 'saa':
         col_epb = -50
@@ -112,35 +117,6 @@ def concat_results(
     ds['doy'] = ds.index.day_of_year.copy()
 
     return ds
-
-def sel_rename(site, cols = ['gamma', 'epb']):
-    ds = concat_results(site)[cols]
-    for col in ds.columns:
-        ds.rename(columns = {col: f'{col}_{site}'}, inplace = True)
-        
-    return ds 
-
-
-def concat_sites():
-    df = pd.concat(
-        [sel_rename('saa'), sel_rename('jic'), geo_index()], 
-        axis = 1)
-
-
-    return df.dropna()
-
-
-def sep_data(df, site):
-    
-    cols = [f'gamma_{site}', f'epb_{site}']
-    ds = df[cols]
-    
-    for col in cols:
-        ds.rename(
-            columns = {col: col.replace(f'_{site}', '')}, 
-            inplace = True)
-        
-    return ds 
 
 
 def local_results(
@@ -161,10 +137,17 @@ def local_results(
 
 
 def get_same_length():
-    ds1 = concat_results('saa')
-    ds2 = concat_results('jic')
-
-    return ds1.loc[ds1.index.isin(ds2.index)].dropna(), ds2.dropna()
+    ds1 = load_results('saa')
+    ds2 = load_results('jic')
+    
+    sel_2 = ds1.loc[ds1.index.isin(ds2.index)]
+    
+    return sel_2.dropna(), ds2.dropna()
 
 
 # ds = concat_results('saa')
+# epbs()
+load_results(
+        site = 'saa', 
+        gamma_cols = ['vp', 'gamma']
+        )

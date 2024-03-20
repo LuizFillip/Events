@@ -16,13 +16,17 @@ def limits(col):
 
 
 
-def probability_distribution(df, col = 'gamma'):
+def probability_distribution(
+        df, 
+        parameter = 'gamma', 
+        outliner = 10
+        ):
     
     """
     Read and concatenate growth rate
     and EPBs occurrence
     """
-    vmin, vmax, step = limits(col)
+    vmin, vmax, step = limits(parameter)
     
     bins = np.arange(vmin, vmax + step, step)
  
@@ -45,8 +49,8 @@ def probability_distribution(df, col = 'gamma'):
         start, end = bins[i], bins[i + 1]
         
         ds = df.loc[
-            (df[col] > start) & 
-            (df[col] <= end)
+            (df[parameter] > start) & 
+            (df[parameter] <= end)
             ]
 
         epbs = len(ds.loc[ds['epb'] == 1.0])
@@ -69,16 +73,18 @@ def probability_distribution(df, col = 'gamma'):
                 rate = 0
                 epb_error = 0
             
-        mean = ds[col].mean()
-        std = ds[col].std()
+        mean = ds[parameter].mean()
+        std = ds[parameter].std()
                     
         for key in out.keys():
             
             out[key].append(vars()[key])
     
-    return  pd.DataFrame(out)
+    df = pd.DataFrame(out)
+    if outliner is not None:
+        df = df.loc[~(df['days'] < outliner)].dropna()
 
-
+    return df
 
 
 
