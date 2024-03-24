@@ -25,7 +25,7 @@ def compute_limits(df, parameter = 'gamma'):
     else:
         step = 5
         
-    return vmin, vmax, step
+    return (vmin, vmax, step)
 
 
 
@@ -45,7 +45,7 @@ def probability_distribution(
     else:
         vmin, vmax, step = compute_limits(df, parameter)
 
-    bins = np.arange(vmin -1, vmax + step, step)
+    bins = np.arange(vmin, vmax + step, step)
     
     
     out = {
@@ -107,38 +107,6 @@ def probability_distribution(
 
 
 
-def splited_dataset(df, col):
 
-    vmin, vmax, step = limits(col)
-    
-    bins = np.arange(vmin, vmax + step, step)
-
-    out = []
-    
-    for i in range(len(bins) - 1):
-        
-        start, end = bins[i], bins[i + 1]
-        
-        out.append( 
-            df.loc[(df[col] > start) & (df[col] <= end)]
-        )
-        
-    return pd.concat(out).sort_index()
-
-def test_difference(df):
-        
-    ds1 = splited_dataset(df, 'gamma')
-    ds = splited_dataset(df, 'gravity')
-    
-    return ds.index.difference(ds1.index)
     
     
-    
-def main():
-    df = c.concat_results('saa')
-
-    col = 'gamma'
-
-    ds = probability_distribution(df)
-    
-    return ds
