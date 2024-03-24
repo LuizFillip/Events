@@ -38,9 +38,16 @@ def epbs(col = -50,
          eyear = 2023
          ):
     
-    df = b.load('core/data/epb_class')
-
-    df = pb.bubble_class(df, typing = 'sunset') 
+    # PATH_EPB = 'events_class'
+    # PATH_EPB = 'core/data/epb_class'
+    PATH_EPB = 'events_class2'
+    
+    
+    df = b.load(PATH_EPB)
+    try:
+        df = pb.bubble_class(df, typing = 'sunset') 
+    except:
+        pass
 
     df.columns = pd.to_numeric(df.columns)
     
@@ -56,6 +63,16 @@ def epbs(col = -50,
         df = pd.concat([df, idx], axis = 1).dropna()
         
     return df
+
+
+def interpote_hourly(ey = 2023, es = 2013):
+    ds = b.load(PATH_INDEX)[['kp', 'dst']]
+    
+    ds = ds.loc[(ds.index.year >= es) & 
+                (ds.index.year <= ey)]
+    
+    return  ds.resample('60s').asfreq().interpolate()
+
 
 
 def geo_index(
@@ -100,15 +117,17 @@ def load_results(
         eyear = eyear
         )
     
-    g = b.load('gamma_saa')[gamma_cols]
-    g['gamma'] = g['gamma'] * 1e3
+    # g = b.load('gamma_saa')[gamma_cols]
+    # g['gamma'] = g['gamma'] * 1e3
+    g = gamma(site = site)[gamma_cols]
+    
     
     if site == 'saa':
         col_epb = -50
     else:
         col_epb = -80
     
-    g = g.loc[~(g['vp'] > 100)]
+    # g = g.loc[~((g['vp'] > 100) | (g['vp'] < 0))]
         
     e = epbs(col = col_epb)
 
@@ -145,9 +164,10 @@ def get_same_length():
     return sel_2.dropna(), ds2.dropna()
 
 
-# ds = concat_results('saa')
+
 # epbs()
-load_results(
-        site = 'saa', 
-        gamma_cols = ['vp', 'gamma']
+df = load_results(
+        site = 'saa', eyear = 2022
         )
+
+df

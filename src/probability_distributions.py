@@ -2,34 +2,52 @@ import pandas as pd
 import numpy as np
 import core as c
 
-def limits(col):
-    if 'gamma' in col:
+def input_limits(parameter):
+    if 'gamma' in parameter:
         # vmin, vmax, step = 0, 3.8, 0.2
         vmin, vmax, step = 0, 2.8, 0.2
-    elif col == 'vp':
+    elif parameter == 'vp':
+        # vmin, vmax, step = -1, 90, 5
         vmin, vmax, step = 0, 70, 5
-        # vmin, vmax, step = 0, 50, 5
     else:
         vmin, vmax, step = 0, 0.8, 0.05
         
     return (vmin, vmax, step)
 
 
+def compute_limits(df, parameter = 'gamma'):
+    vls = df[parameter].values 
+    
+    vmin, vmax = np.floor(vls.min()), np.ceil(vls.max())
+    
+    if parameter == 'gamma':
+        step = 0.5
+    else:
+        step = 5
+        
+    return vmin, vmax, step
+
+
 
 def probability_distribution(
         df, 
         parameter = 'gamma', 
-        outliner = 10
+        outliner = 10,
+        limit = None
         ):
     
     """
     Read and concatenate growth rate
     and EPBs occurrence
     """
-    vmin, vmax, step = limits(parameter)
+    if limit is None:
+        vmin, vmax, step = input_limits(parameter)
+    else:
+        vmin, vmax, step = compute_limits(df, parameter)
+
+    bins = np.arange(vmin -1, vmax + step, step)
     
-    bins = np.arange(vmin, vmax + step, step)
- 
+    
     out = {
            
            'start': [], 
@@ -81,6 +99,7 @@ def probability_distribution(
             out[key].append(vars()[key])
     
     df = pd.DataFrame(out)
+    
     if outliner is not None:
         df = df.loc[~(df['days'] < outliner)].dropna()
 
