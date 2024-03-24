@@ -85,9 +85,7 @@ def run_days(year, root = os.getcwd()):
     
     out = []
     
-    for doy in tqdm(
-            range(1, 366), 
-                    str(year)):
+    for doy in tqdm(range(1, 366), str(year)):
             
         path = gs.paths(
             year, doy, root 

@@ -21,7 +21,7 @@ def compute_limits(df, parameter = 'gamma'):
     vmin, vmax = np.floor(vls.min()), np.ceil(vls.max())
     
     if parameter == 'gamma':
-        step = 0.5
+        step = 0.2
     else:
         step = 5
         
