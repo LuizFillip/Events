@@ -48,14 +48,14 @@ def test_number_of_epbs(df, ds):
 # test_number_of_epbs(df, ds)
 # test_number_of_days(df, ds, parameter)
 
-df = c.load_results('saa')
-parameter = 'vp'
+# df = c.load_results('saa')
+# parameter = 'vp'
 
-ds = c.probability_distribution(
-        df, 
-        parameter, 
-        outliner = None,
-        limit = False 
-        )
+# ds = c.probability_distribution(
+#         df, 
+#         parameter, 
+#         outliner = None,
+#         limit = False 
+#         )
 
-ds
+# ds

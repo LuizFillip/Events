@@ -1,21 +1,18 @@
 import core as c
 from sklearn.metrics import confusion_matrix, accuracy_score
-
+import pandas as pd
 
 def predict(pred, input_value):
     
     pred['Diff1'] = abs(pred['start'] - input_value)
     pred['Diff2'] = abs(pred['end'] - input_value)
     
-   
     min_row = pred.loc[(pred['Diff1'] + pred['Diff2']).idxmin()]
     
-    if min_row['rate'] <= 0.5:
-        return 0
-    else:
+    if min_row['rate'] > 0.5:
         return 1
-
-
+    else:
+        return 0
 
 def predict_values(train_data, test_data):
     
@@ -33,16 +30,25 @@ def metrics(y, y_pred):
     
     return cm, acc_score
 
-year_threshold = 2023
 
 
-df = c.load_results('saa')
 
-train_data = df.loc[df.index.year < year_threshold]
+def forecast_epbs(year_threshold = 2023):
+    
+    df = c.load_results('saa', eyear = 2023)
 
-test_data = df.loc[df.index.year == year_threshold]
+    train_data = df.loc[df.index.year < year_threshold]
+
+    test_data = df.loc[df.index.year == year_threshold]
+
+    epb, epb_pred = predict_values(train_data, test_data)
+    
+    print(metrics(epb, epb_pred))
+
+    data = {'real' : epb, 'pred': epb_pred}
+    
+    return pd.DataFrame(data, index = test_data.index).astype('int')
 
 
-epb, epb_pred = predict_values(train_data, test_data)
 
-metrics(epb, epb_pred)
+forecast_epbs(year_threshold = 2023)

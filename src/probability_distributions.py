@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-import core as c
 
 def input_limits(parameter):
     if 'gamma' in parameter:
@@ -33,14 +32,14 @@ def probability_distribution(
         df, 
         parameter = 'gamma', 
         outliner = 10,
-        limit = None
+        limit = True
         ):
     
     """
     Read and concatenate growth rate
     and EPBs occurrence
     """
-    if limit is None:
+    if limit:
         vmin, vmax, step = input_limits(parameter)
     else:
         vmin, vmax, step = compute_limits(df, parameter)

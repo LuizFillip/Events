@@ -111,14 +111,14 @@ def load_results(
         eyear = 2023
         ):
     
-    i = geo_index(
-        cols = ['f107a', 'f107', 'kp', 'dst'],
-        syear = syear, 
-        eyear = eyear
-        )
+    # i = geo_index(
+    #     cols = ['f107a', 'f107', 'kp', 'dst'],
+    #     syear = syear, 
+    #     eyear = eyear
+    #     )
     
-    # g = b.load('gamma_saa')[gamma_cols]
-    # g['gamma'] = g['gamma'] * 1e3
+    g = b.load('gamma_saa')[gamma_cols]
+    g['gamma'] = g['gamma'] * 1e3
     g = gamma(site = site)[gamma_cols]
     
     
@@ -129,9 +129,10 @@ def load_results(
     
     # g = g.loc[~((g['vp'] > 100) | (g['vp'] < 0))]
         
-    e = epbs(col = col_epb)
+    e = epbs(col = col_epb, geo = True, 
+             syear = syear, eyear = eyear)
 
-    ds = pd.concat([g, i, e], axis = 1).dropna().sort_index()
+    ds = pd.concat([g, e], axis = 1).dropna().sort_index()
 
     ds['doy'] = ds.index.day_of_year.copy()
 
@@ -163,11 +164,3 @@ def get_same_length():
     
     return sel_2.dropna(), ds2.dropna()
 
-
-
-# epbs()
-df = load_results(
-        site = 'saa', eyear = 2022
-        )
-
-df

@@ -63,10 +63,9 @@ class DisturbedLevels:
         
         return [week, moderate, intense]
 
-
-    
     @staticmethod
     def solar_labels(level):
+        level = round(level, 1)
         return [
         '$F_{10.7} \\leq $' + f' {level}',
         '$F_{10.7} > $' + f' {level}'

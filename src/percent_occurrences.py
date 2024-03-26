@@ -20,13 +20,9 @@ def geomanetic_by_solar(
     
     solar = ['low', 'high']
     
-    solar_dfs = c.solar_levels(
-        df, 
-        level = level,
-        flux_col = 'f107a'
-        )
+    solar_df  = c.DisturbedLevels(df)
     
-    for i, ds in enumerate(solar_dfs):
+    for i, ds in enumerate(solar_df.F107(level)):
         
         quiet = ds.loc[ds['kp'] <= 3]
         disturded = ds.loc[ds['kp'] > 3]
@@ -53,15 +49,17 @@ def geomanetic_by_solar(
     
     return ds
 
-# df = c.concat_results('saa')
-# # df = c.epbs(geo = True)
-# limit = c.limits_on_parts(df['f107a'], parts = 2)
+df = c.load_results('saa')
 
-# ds = geomanetic_by_solar(
-#         df, 
-#         percent_like = False,
-#         level = limit
-#         )
+df = c.epbs(geo = True, eyear = 2022)
 
+limit = c.limits_on_parts(df['f107a'], parts = 2)
 
+ds = geomanetic_by_solar(
+        df, 
+        percent_like = True,
+        level = limit
+        )
+
+ds
 
